@@ -1,0 +1,368 @@
+/* Awaid Projects — single layout (Riva-inspired, RTL-aware) */
+
+.awaid-project {
+	--awaid-ink: #0f172a;
+	--awaid-muted: #64748b;
+	--awaid-line: #e2e8f0;
+	--awaid-surface: #ffffff;
+	--awaid-surface-2: #f8fafc;
+	--awaid-accent: #b8860b;
+	--awaid-accent-2: #0d9488;
+	--awaid-radius: 14px;
+	--awaid-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+	color: var(--awaid-ink);
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	line-height: 1.6;
+}
+
+.awaid-project--rtl {
+	direction: rtl;
+	text-align: right;
+}
+
+.awaid-container {
+	width: min(1120px, 100% - 40px);
+	margin-inline: auto;
+}
+
+.awaid-hero {
+	position: relative;
+	min-height: clamp(320px, 52vh, 560px);
+	display: flex;
+	align-items: flex-end;
+	color: #fff;
+	background-color: #0b1220;
+	background-image: linear-gradient(180deg, rgba(11, 18, 32, 0.15) 0%, rgba(11, 18, 32, 0.88) 100%),
+		var(--awaid-hero-image, none);
+	background-size: cover;
+	background-position: center;
+}
+
+.awaid-hero__inner {
+	width: min(1120px, 100% - 40px);
+	margin: 0 auto;
+	padding: 48px 0 56px;
+}
+
+.awaid-hero__crumb a {
+	color: rgba(255, 255, 255, 0.82);
+	text-decoration: none;
+	font-size: 0.9rem;
+}
+
+.awaid-hero__crumb a:hover {
+	text-decoration: underline;
+}
+
+.awaid-hero__title {
+	font-size: clamp(1.75rem, 4vw, 2.75rem);
+	line-height: 1.15;
+	margin: 10px 0 8px;
+	letter-spacing: -0.02em;
+}
+
+.awaid-hero__location {
+	margin: 0 0 22px;
+	font-size: 1.05rem;
+	color: rgba(255, 255, 255, 0.88);
+}
+
+.awaid-hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+.awaid-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 12px 20px;
+	border-radius: 999px;
+	font-weight: 600;
+	font-size: 0.95rem;
+	text-decoration: none;
+	border: 1px solid transparent;
+	transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.awaid-btn--primary {
+	background: var(--awaid-accent);
+	color: #0b1220;
+	box-shadow: 0 10px 30px rgba(184, 134, 11, 0.35);
+}
+
+.awaid-btn--primary:hover {
+	transform: translateY(-1px);
+}
+
+.awaid-btn--ghost {
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff;
+	border-color: rgba(255, 255, 255, 0.35);
+	backdrop-filter: blur(6px);
+}
+
+.awaid-btn--ghost:hover {
+	background: rgba(255, 255, 255, 0.14);
+}
+
+.awaid-strip {
+	background: var(--awaid-surface);
+	border-bottom: 1px solid var(--awaid-line);
+}
+
+.awaid-strip__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 18px 24px;
+	padding: 22px 0;
+}
+
+.awaid-strip__item {
+	padding: 12px 14px;
+	border: 1px solid var(--awaid-line);
+	border-radius: var(--awaid-radius);
+	background: var(--awaid-surface-2);
+}
+
+.awaid-strip__item--wide {
+	grid-column: 1 / -1;
+}
+
+.awaid-strip__label {
+	display: block;
+	font-size: 0.78rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--awaid-muted);
+	margin-bottom: 4px;
+}
+
+.awaid-strip__value {
+	font-weight: 600;
+	font-size: 1rem;
+}
+
+.awaid-section {
+	padding: 56px 0;
+}
+
+.awaid-section--muted {
+	background: var(--awaid-surface-2);
+	border-block: 1px solid var(--awaid-line);
+}
+
+.awaid-section--location {
+	background: var(--awaid-surface);
+}
+
+.awaid-section__title {
+	font-size: 1.5rem;
+	margin: 0 0 22px;
+	letter-spacing: -0.02em;
+}
+
+.awaid-prose .awaid-entry-content > *:first-child {
+	margin-top: 0;
+}
+
+.awaid-prose .awaid-entry-content > *:last-child {
+	margin-bottom: 0;
+}
+
+.awaid-unit-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 22px;
+}
+
+.awaid-pill {
+	border: 1px solid var(--awaid-line);
+	background: #fff;
+	color: var(--awaid-ink);
+	padding: 8px 16px;
+	border-radius: 999px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.awaid-pill.is-active,
+.awaid-pill:hover {
+	border-color: rgba(13, 148, 136, 0.45);
+	color: var(--awaid-accent-2);
+	background: rgba(13, 148, 136, 0.06);
+}
+
+.awaid-units-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+	gap: 18px;
+}
+
+.awaid-unit-card {
+	border: 1px solid var(--awaid-line);
+	border-radius: var(--awaid-radius);
+	padding: 18px;
+	background: #fff;
+	box-shadow: var(--awaid-shadow);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.awaid-unit-card--sold {
+	opacity: 0.72;
+}
+
+.awaid-unit-card__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.awaid-unit-card__code {
+	font-size: 1.25rem;
+	font-weight: 800;
+	letter-spacing: 0.02em;
+}
+
+.awaid-badge {
+	font-size: 0.75rem;
+	font-weight: 700;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background: rgba(15, 23, 42, 0.08);
+}
+
+.awaid-badge--sold {
+	background: rgba(220, 38, 38, 0.12);
+	color: #b91c1c;
+}
+
+.awaid-unit-card__type {
+	margin: 0;
+	color: var(--awaid-muted);
+	font-size: 0.95rem;
+}
+
+.awaid-unit-card__meta {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 8px;
+	font-size: 0.95rem;
+}
+
+.awaid-meta-label {
+	color: var(--awaid-muted);
+	font-size: 0.85rem;
+	margin-inline-end: 6px;
+}
+
+.awaid-features-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 14px;
+}
+
+.awaid-feature-tile {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 16px 18px;
+	border-radius: var(--awaid-radius);
+	border: 1px solid var(--awaid-line);
+	background: #fff;
+}
+
+.awaid-feature-tile__dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	margin-top: 6px;
+	background: linear-gradient(135deg, var(--awaid-accent), var(--awaid-accent-2));
+	flex-shrink: 0;
+}
+
+.awaid-feature-tile__text {
+	font-weight: 600;
+}
+
+.awaid-warranty-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 14px;
+}
+
+.awaid-warranty-card {
+	padding: 18px;
+	border-radius: var(--awaid-radius);
+	border: 1px solid var(--awaid-line);
+	background: #fff;
+	box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
+.awaid-warranty-card__title {
+	margin: 0 0 6px;
+	font-size: 1rem;
+}
+
+.awaid-warranty-card__period {
+	margin: 0;
+	color: var(--awaid-muted);
+	font-weight: 600;
+}
+
+.awaid-location {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 28px;
+	align-items: start;
+}
+
+.awaid-location__address {
+	margin: 0 0 16px;
+	font-size: 1.05rem;
+	color: var(--awaid-muted);
+}
+
+.awaid-nearby__title {
+	margin: 0 0 12px;
+	font-size: 1.05rem;
+}
+
+.awaid-nearby__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 10px;
+}
+
+.awaid-nearby__list li {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 12px 14px;
+	border: 1px solid var(--awaid-line);
+	border-radius: 12px;
+	background: var(--awaid-surface-2);
+}
+
+.awaid-nearby__dist {
+	color: var(--awaid-muted);
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+	.awaid-strip__item--wide {
+		grid-column: auto;
+	}
+}
