@@ -43,7 +43,7 @@ function awaid_project_price_range_display(array $d): string {
 	$max = isset($d['price_max']) ? trim((string) $d['price_max']) : '';
 	if ($min !== '' && $max !== '') {
 		/* translators: 1: min price, 2: max price */
-		return sprintf(__('%1$s to %2$s', 'awaid-projects'), $min, $max);
+		return sprintf(__('من %1$s إلى %2$s', 'awaid-projects'), $min, $max);
 	}
 	if ($min !== '') {
 		return $min;

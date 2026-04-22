@@ -69,6 +69,7 @@ while (have_posts()) :
 		'area'      => $upload_sub !== '' ? $upload_sub . '/2026/04/move.png' : '',
 		'bedrooms'  => $upload_sub !== '' ? $upload_sub . '/2026/04/bed.png' : '',
 		'bathrooms' => $upload_sub !== '' ? $upload_sub . '/2026/04/bathtub-01.png' : '',
+		'currency' => $upload_sub !== '' ? $upload_sub . '/2026/04/currency.svg' : '',
 	];
 	$specs_panel_dir = is_rtl() ? 'rtl' : 'ltr';
 
@@ -77,7 +78,7 @@ while (have_posts()) :
 		?>
 		<div class="<?php echo esc_attr($base); ?>">
 			<div class="awaid-sidebar-card__block">
-				<p class="awaid-sidebar-card__eyebrow"><?php esc_html_e('Developer', 'awaid-projects'); ?></p>
+				<p class="awaid-sidebar-card__eyebrow"><?php esc_html_e('المطور', 'awaid-projects'); ?></p>
 				<?php if (!empty($d['developer'])) : ?>
 					<p class="awaid-sidebar-card__strong"><?php echo esc_html((string) $d['developer']); ?></p>
 				<?php endif; ?>
@@ -94,7 +95,7 @@ while (have_posts()) :
 			?>
 			<?php if ($spec_has_any) : ?>
 				<div class="awaid-panel awaid-panel--specs p-2 py-3 mt-2 rounded" dir="<?php echo esc_attr($specs_panel_dir); ?>" style="background: #f1f1f19e !important;">
-					<p class="mb-1 text-gray-800"><?php esc_html_e('Project specs', 'awaid-projects'); ?></p>
+					<p class="mb-1 text-gray-800"><?php esc_html_e('مواصفات المشروع', 'awaid-projects'); ?></p>
 					<?php if ($spec_row1) : ?>
 						<ul class="post-meta row mb-2">
 							<?php if ($spec_has_area) : ?>
@@ -147,20 +148,30 @@ while (have_posts()) :
 				<ul class="awaid-meta-rows">
 					<?php if (!empty($d['license'])) : ?>
 						<li>
-							<span class="awaid-meta-rows__k"><?php esc_html_e('Ad license', 'awaid-projects'); ?></span>
+							<span class="awaid-meta-rows__k"><?php esc_html_e('رخصة الاعلان', 'awaid-projects'); ?></span>
 							<span class="awaid-meta-rows__v"><?php echo esc_html((string) $d['license']); ?></span>
 						</li>
 					<?php endif; ?>
 					<?php if (!empty($d['listing_date'])) : ?>
 						<li>
-							<span class="awaid-meta-rows__k"><?php esc_html_e('Listing date', 'awaid-projects'); ?></span>
+							<span class="awaid-meta-rows__k"><?php esc_html_e('تاريخ النشر', 'awaid-projects'); ?></span>
 							<span class="awaid-meta-rows__v"><?php echo esc_html((string) $d['listing_date']); ?></span>
 						</li>
 					<?php endif; ?>
 				</ul>
 				<?php if ($price_range !== '') : ?>
-					<p class="awaid-meta-rows__k awaid-mt"><?php esc_html_e('Price range', 'awaid-projects'); ?></p>
-					<p class="awaid-price-range"><?php echo esc_html($price_range); ?></p>
+					<p class="awaid-meta-rows__k awaid-mt"><?php esc_html_e('السعر', 'awaid-projects'); ?></p>
+					<p class="awaid-price-range">
+						<?php echo esc_html($price_range); ?>
+						&nbsp;
+						<span class="awaid-price-range__currency">
+							<?php if (!empty($spec_icons['currency'])) : ?>
+								<img src="<?php echo esc_url($spec_icons['currency']); ?>" class="dark-image" style="width: 14px;" alt="<?php esc_attr_e('Currency', 'awaid-projects'); ?>" loading="lazy" decoding="async" width="20" height="20">
+							<?php else : ?>
+								<span class="awaid-price-range__currency-symbol">ر.س</span>
+							<?php endif; ?>
+						</span>
+					</p>
 				<?php endif; ?>
 			</div>
 
@@ -184,10 +195,6 @@ while (have_posts()) :
 	<section class="awaid-project-shell">
 		<div class="awaid-container-wide">
 			<div class="row awaid-split-row align-items-start">
-				<aside class="col-12 col-lg-3 awaid-split-sidebar">
-					<?php $render_sidebar('awaid-sidebar--desktop'); ?>
-				</aside>
-
 				<div class="col-12 col-lg-9 awaid-split-main">
 					<?php if ($has_lead_slides || $brochure_url || $map_url) : ?>
 						<div class="awaid-lead-media">
@@ -421,6 +428,10 @@ while (have_posts()) :
 						</div>
 					</section>
 				</div>
+
+				<aside class="col-12 col-lg-3 awaid-split-sidebar">
+					<?php $render_sidebar('awaid-sidebar--desktop'); ?>
+				</aside>
 			</div>
 		</div>
 	</section>

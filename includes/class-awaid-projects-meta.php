@@ -17,7 +17,7 @@ class Awaid_Projects_Meta {
 	public static function register_boxes(): void {
 		add_meta_box(
 			'awaid_project_details',
-			__('Project details', 'awaid-projects'),
+			__('تفاصيل المشروع', 'awaid-projects'),
 			[__CLASS__, 'render_box'],
 			'awaid_project',
 			'normal',
