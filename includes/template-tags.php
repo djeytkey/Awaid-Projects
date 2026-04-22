@@ -24,13 +24,13 @@ function awaid_project_area_range_display(array $d): string {
 	$max = isset($d['area_max']) ? trim((string) $d['area_max']) : '';
 	if ($min !== '' && $max !== '') {
 		/* translators: 1: min area, 2: max area */
-		return sprintf(__('%1$s – %2$s m²', 'awaid-projects'), $min, $max);
+		return sprintf(__('%1$s – %2$s م²', 'awaid-projects'), $min, $max);
 	}
 	if ($min !== '') {
-		return sprintf(__('%s m²', 'awaid-projects'), $min);
+		return sprintf(__('%s م²', 'awaid-projects'), $min);
 	}
 	if ($max !== '') {
-		return sprintf(__('%s m²', 'awaid-projects'), $max);
+		return sprintf(__('%s م²', 'awaid-projects'), $max);
 	}
 	return '';
 }

@@ -29,10 +29,380 @@
 		});
 	}
 
+	function initLeadSlider(root) {
+		var slider = root.querySelector('[data-awaid-lead-slider]');
+		if (!slider) {
+			return;
+		}
+		var vp = slider.querySelector('[data-awaid-slider-viewport]');
+		if (!vp) {
+			return;
+		}
+		var prev = slider.querySelector('[data-awaid-slider-prev]');
+		var next = slider.querySelector('[data-awaid-slider-next]');
+		var dots = slider.querySelectorAll('[data-awaid-slider-dot]');
+		var slides = vp.querySelectorAll('[data-awaid-slider-slide]');
+		var n = slides.length;
+		if (!n) {
+			return;
+		}
+
+		function slideWidth() {
+			return vp.clientWidth || 1;
+		}
+
+		function syncDots(active) {
+			dots.forEach(function (d, idx) {
+				var on = idx === active;
+				d.classList.toggle('is-active', on);
+				if (on) {
+					d.setAttribute('aria-current', 'true');
+				} else {
+					d.removeAttribute('aria-current');
+				}
+			});
+		}
+
+		function currentIndex() {
+			var w = slideWidth();
+			return Math.round(vp.scrollLeft / w);
+		}
+
+		function goIndex(i) {
+			i = ((i % n) + n) % n;
+			vp.scrollTo({ left: i * slideWidth(), behavior: 'smooth' });
+			syncDots(i);
+		}
+
+		var scrollTimer;
+		vp.addEventListener(
+			'scroll',
+			function () {
+				clearTimeout(scrollTimer);
+				scrollTimer = setTimeout(function () {
+					syncDots(currentIndex());
+				}, 80);
+			},
+			{ passive: true }
+		);
+
+		if (prev) {
+			prev.addEventListener('click', function (e) {
+				e.preventDefault();
+				goIndex(currentIndex() - 1);
+			});
+		}
+		if (next) {
+			next.addEventListener('click', function (e) {
+				e.preventDefault();
+				goIndex(currentIndex() + 1);
+			});
+		}
+		dots.forEach(function (d) {
+			d.addEventListener('click', function (e) {
+				e.preventDefault();
+				var idx = parseInt(d.getAttribute('data-awaid-slider-dot'), 10);
+				if (!isNaN(idx)) {
+					goIndex(idx);
+				}
+			});
+		});
+	}
+
+	function initLightbox(root) {
+		var lb = root.querySelector('#awaid-project-lightbox');
+		if (!lb) {
+			return;
+		}
+		var img = lb.querySelector('[data-awaid-lightbox-img]');
+		var btnPrev = lb.querySelector('[data-awaid-lightbox-prev]');
+		var btnNext = lb.querySelector('[data-awaid-lightbox-next]');
+		if (!img) {
+			return;
+		}
+
+		var items = [];
+		var idx = 0;
+
+		function refreshItems() {
+			items = Array.prototype.slice.call(root.querySelectorAll('[data-awaid-lightbox-open]'));
+		}
+
+		function show(at) {
+			refreshItems();
+			if (!items.length) {
+				return;
+			}
+			idx = ((at % items.length) + items.length) % items.length;
+			var el = items[idx];
+			var src = el.getAttribute('data-src') || '';
+			var alt = el.getAttribute('data-alt') || '';
+			img.src = src;
+			img.alt = alt;
+			lb.removeAttribute('hidden');
+			lb.classList.add('is-open');
+			document.documentElement.classList.add('awaid-lightbox-on');
+			var closeBtn = lb.querySelector('.awaid-lightbox__close');
+			if (closeBtn) {
+				closeBtn.focus();
+			}
+		}
+
+		function hide() {
+			lb.classList.remove('is-open');
+			lb.setAttribute('hidden', '');
+			document.documentElement.classList.remove('awaid-lightbox-on');
+			img.removeAttribute('src');
+			img.alt = '';
+		}
+
+		function step(delta) {
+			refreshItems();
+			if (items.length < 2) {
+				return;
+			}
+			show(idx + delta);
+		}
+
+		root.addEventListener('click', function (e) {
+			var t = e.target.closest('[data-awaid-lightbox-open]');
+			if (!t || !root.contains(t)) {
+				return;
+			}
+			e.preventDefault();
+			refreshItems();
+			idx = items.indexOf(t);
+			show(idx >= 0 ? idx : 0);
+		});
+
+		lb.addEventListener('click', function (e) {
+			if (e.target.closest('[data-awaid-lightbox-close]')) {
+				e.preventDefault();
+				hide();
+			}
+		});
+
+		if (btnPrev) {
+			btnPrev.addEventListener('click', function (e) {
+				e.preventDefault();
+				step(-1);
+			});
+		}
+		if (btnNext) {
+			btnNext.addEventListener('click', function (e) {
+				e.preventDefault();
+				step(1);
+			});
+		}
+
+		document.addEventListener('keydown', function (e) {
+			if (!lb.classList.contains('is-open')) {
+				return;
+			}
+			if (e.key === 'Escape') {
+				e.preventDefault();
+				hide();
+			} else if (e.key === 'ArrowLeft') {
+				e.preventDefault();
+				step(-1);
+			} else if (e.key === 'ArrowRight') {
+				e.preventDefault();
+				step(1);
+			}
+		});
+	}
+
+	/**
+	 * Desktop sidebar: pin with position:fixed while scrolling (CSS sticky often fails when
+	 * any ancestor has overflow:hidden, e.g. Rehomes .site-content-contain).
+	 */
+	function initDesktopSidebarSticky(root) {
+		var aside = root.querySelector('.awaid-split-sidebar');
+		var card = aside && aside.querySelector('.awaid-sidebar--desktop');
+		if (!aside || !card) {
+			return;
+		}
+
+		var mq = window.matchMedia('(min-width: 992px)');
+		var ph = null;
+		var rafId = null;
+		var footerEl = null;
+
+		function findFooter() {
+			if (footerEl && document.body.contains(footerEl)) {
+				return footerEl;
+			}
+			footerEl = null;
+
+			var col = document.getElementById('colophon');
+			if (col && !col.closest('.awaid-project') && col.getBoundingClientRect().height > 8) {
+				footerEl = col;
+				return footerEl;
+			}
+
+			var selectors = [
+				'footer.site-footer',
+				'.site-footer',
+				'footer.elementor-location-footer',
+				'body > footer',
+				'.site-footer-wrap',
+				'#opal-footer',
+				'.opal-footer',
+				'footer'
+			];
+			var s;
+			var i;
+			var list;
+			var el;
+			for (s = 0; s < selectors.length; s++) {
+				list = document.querySelectorAll(selectors[s]);
+				for (i = 0; i < list.length; i++) {
+					el = list[i];
+					if (!el || el.closest('.awaid-project')) {
+						continue;
+					}
+					if (el.getBoundingClientRect().height < 8) {
+						continue;
+					}
+					if (root.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) {
+						footerEl = el;
+						return footerEl;
+					}
+				}
+			}
+			for (s = 0; s < selectors.length; s++) {
+				list = document.querySelectorAll(selectors[s]);
+				for (i = 0; i < list.length; i++) {
+					el = list[i];
+					if (el && !el.closest('.awaid-project') && el.getBoundingClientRect().height >= 8) {
+						footerEl = el;
+						return footerEl;
+					}
+				}
+			}
+			return null;
+		}
+
+		function limitTop() {
+			var bar = document.getElementById('wpadminbar');
+			var bh = 0;
+			if (bar && document.body.classList.contains('admin-bar')) {
+				bh = bar.offsetHeight || 0;
+			}
+			return bh + 16;
+		}
+
+		function ensurePlaceholder(height) {
+			if (!ph) {
+				ph = document.createElement('div');
+				ph.className = 'awaid-sidebar-sticky-placeholder';
+				ph.setAttribute('aria-hidden', 'true');
+				aside.insertBefore(ph, card);
+			}
+			ph.style.height = height + 'px';
+			ph.style.flexShrink = '0';
+		}
+
+		function removePlaceholder() {
+			if (ph && ph.parentNode) {
+				ph.parentNode.removeChild(ph);
+			}
+			ph = null;
+		}
+
+		function reset() {
+			card.style.cssText = '';
+			removePlaceholder();
+		}
+
+		function tick() {
+			rafId = null;
+			if (!mq.matches) {
+				reset();
+				return;
+			}
+			if (aside.offsetParent === null) {
+				reset();
+				return;
+			}
+
+			var a = aside.getBoundingClientRect();
+			var h = card.offsetHeight;
+			if (h <= 0 || a.width <= 0) {
+				reset();
+				return;
+			}
+
+			var limit = limitTop();
+
+			/* Above the pin line: natural layout */
+			if (a.top >= limit) {
+				reset();
+				return;
+			}
+
+			/* Pin: prefer `limit`, but move up so the card stays inside the column bottom */
+			var topPx = Math.max(0, Math.min(limit, a.bottom - h));
+
+			var footer = findFooter();
+			var footerGap = 32;
+			if (footer) {
+				var fr = footer.getBoundingClientRect();
+				/* Bottom edge of card must stay at or above (footer top − gap), regardless of viewport */
+				var ceiling = fr.top - footerGap;
+				topPx = Math.min(topPx, ceiling - h);
+				topPx = Math.max(0, topPx);
+				/* If we still cannot fit above the footer, do not pin */
+				if (topPx + h > ceiling + 1) {
+					reset();
+					return;
+				}
+				if (topPx < a.top - 4) {
+					reset();
+					return;
+				}
+			}
+
+			ensurePlaceholder(h);
+			card.style.position = 'fixed';
+			card.style.top = topPx + 'px';
+			card.style.left = a.left + 'px';
+			card.style.width = a.width + 'px';
+			card.style.boxSizing = 'border-box';
+			/* Stay under typical footer stacking so we do not paint over the footer if geometry slips */
+			card.style.zIndex = '2';
+		}
+
+		function reqTick() {
+			if (rafId !== null) {
+				return;
+			}
+			rafId = window.requestAnimationFrame(function () {
+				rafId = null;
+				tick();
+			});
+		}
+
+		window.addEventListener('scroll', reqTick, { passive: true });
+		window.addEventListener('resize', function () {
+			footerEl = null;
+			reqTick();
+		});
+		if (mq.addEventListener) {
+			mq.addEventListener('change', reqTick);
+		} else if (mq.addListener) {
+			mq.addListener(reqTick);
+		}
+		reqTick();
+	}
+
 	document.addEventListener('DOMContentLoaded', function () {
 		var root = document.querySelector('.awaid-project');
 		if (root) {
 			initFilters(root);
+			initLeadSlider(root);
+			initLightbox(root);
+			initDesktopSidebarSticky(root);
 		}
 	});
 })();

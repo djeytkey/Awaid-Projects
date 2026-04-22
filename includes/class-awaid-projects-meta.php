@@ -43,6 +43,7 @@ class Awaid_Projects_Meta {
 			'price_max'      => '',
 			'brochure_id'    => 0,
 			'map_url'        => '',
+			'gallery_ids'    => [],
 			'features'       => [],
 			'warranties'     => [],
 			'nearby'         => [],
@@ -118,6 +119,15 @@ class Awaid_Projects_Meta {
 		$out['price_max']    = isset($raw['price_max']) ? sanitize_text_field((string) $raw['price_max']) : '';
 		$out['map_url']      = isset($raw['map_url']) ? esc_url_raw((string) $raw['map_url']) : '';
 		$out['brochure_id']  = isset($raw['brochure_id']) ? absint($raw['brochure_id']) : 0;
+
+		$gallery_csv = isset($raw['gallery_csv']) ? (string) $raw['gallery_csv'] : '';
+		$gallery_ids = array_filter(array_map('absint', preg_split('/\s*,\s*/', $gallery_csv)));
+		$out['gallery_ids'] = [];
+		foreach (array_unique($gallery_ids) as $gid) {
+			if ($gid && wp_attachment_is_image($gid)) {
+				$out['gallery_ids'][] = $gid;
+			}
+		}
 
 		$features = isset($raw['features']) && is_array($raw['features']) ? $raw['features'] : [];
 		$out['features'] = [];

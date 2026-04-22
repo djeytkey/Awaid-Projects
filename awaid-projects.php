@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Awaid Projects
- * Description: Custom post type for real estate projects with a Riva-style single project layout.
- * Version: 1.0.0
+ * Description: Custom post type for real estate projects with a single project layout.
+ * Version: 1.0.4
  * Author: Awaid
  * Text Domain: awaid-projects
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-define('AWAID_PROJECTS_VERSION', '1.0.0');
+define('AWAID_PROJECTS_VERSION', '1.0.4');
 define('AWAID_PROJECTS_PATH', plugin_dir_path(__FILE__));
 define('AWAID_PROJECTS_URL', plugin_dir_url(__FILE__));
 

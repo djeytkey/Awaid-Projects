@@ -42,9 +42,12 @@ class Awaid_Projects_Assets {
 			'awaidProjectsAdmin',
 			[
 				'i18n' => [
-					'selectFile' => __('Choose brochure file', 'awaid-projects'),
-					'useFile'    => __('Use this file', 'awaid-projects'),
-					'noFile'     => __('No file selected.', 'awaid-projects'),
+					'selectFile'   => __('Choose brochure file', 'awaid-projects'),
+					'useFile'      => __('Use this file', 'awaid-projects'),
+					'noFile'       => __('No file selected.', 'awaid-projects'),
+					'selectGallery'=> __('Choose gallery images', 'awaid-projects'),
+					'useImages'    => __('Add to gallery', 'awaid-projects'),
+					'removeImage'  => __('Remove', 'awaid-projects'),
 				],
 			]
 		);

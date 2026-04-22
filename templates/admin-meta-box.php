@@ -16,6 +16,9 @@ $features   = is_array($d['features'] ?? null) ? $d['features'] : [];
 $warranties = is_array($d['warranties'] ?? null) ? $d['warranties'] : [];
 $nearby     = is_array($d['nearby'] ?? null) ? $d['nearby'] : [];
 $units      = is_array($d['units'] ?? null) ? $d['units'] : [];
+$gallery_ids = is_array($d['gallery_ids'] ?? null) ? array_map('absint', $d['gallery_ids']) : [];
+$gallery_ids = array_values(array_filter(array_unique($gallery_ids)));
+$gallery_csv = implode(',', $gallery_ids);
 
 if (!$features) {
 	$features = [['title' => '']];
@@ -33,7 +36,7 @@ if (!$units) {
 <div class="awaid-admin-meta">
 	<div class="awaid-admin-section">
 		<h3><?php esc_html_e('Summary', 'awaid-projects'); ?></h3>
-		<p class="description"><?php esc_html_e('Project title is the post title. Long description uses the main editor.', 'awaid-projects'); ?></p>
+		<p class="description"><?php esc_html_e('Project title is the post title. Long description uses the main editor. The gallery below powers the project photo slider on the front; if it is empty, the featured image is used as a single slide.', 'awaid-projects'); ?></p>
 		<table class="form-table awaid-form-table">
 			<tr>
 				<th><label for="awaid_location"><?php esc_html_e('Location line', 'awaid-projects'); ?></label></th>
@@ -44,6 +47,29 @@ if (!$units) {
 				<td><input type="text" class="widefat" id="awaid_developer" name="awaid_project[developer]" value="<?php echo esc_attr((string) $d['developer']); ?>"></td>
 			</tr>
 		</table>
+	</div>
+
+	<div class="awaid-admin-section">
+		<h3><?php esc_html_e('Gallery / slider', 'awaid-projects'); ?></h3>
+		<p class="description"><?php esc_html_e('Add multiple images for the single-project carousel. Images appear in the order you add them; remove and re-add to change order.', 'awaid-projects'); ?></p>
+		<input type="hidden" id="awaid_gallery_csv" name="awaid_project[gallery_csv]" value="<?php echo esc_attr($gallery_csv); ?>">
+		<p>
+			<button type="button" class="button" id="awaid_gallery_add"><?php esc_html_e('Add images', 'awaid-projects'); ?></button>
+		</p>
+		<ul class="awaid-gallery-grid" id="awaid_gallery_list">
+			<?php foreach ($gallery_ids as $gid) : ?>
+				<?php
+				if (!$gid || !wp_attachment_is_image($gid)) {
+					continue;
+				}
+				$turl = wp_get_attachment_image_url($gid, 'thumbnail') ?: wp_get_attachment_url($gid);
+				?>
+				<li class="awaid-gallery-item" data-id="<?php echo esc_attr((string) $gid); ?>">
+					<span class="awaid-gallery-thumb"><img src="<?php echo esc_url((string) $turl); ?>" alt="" loading="lazy" decoding="async"></span>
+					<button type="button" class="button button-small awaid-gallery-remove" data-id="<?php echo esc_attr((string) $gid); ?>"><?php esc_html_e('Remove', 'awaid-projects'); ?></button>
+				</li>
+			<?php endforeach; ?>
+		</ul>
 	</div>
 
 	<div class="awaid-admin-section">
@@ -101,7 +127,7 @@ if (!$units) {
 				<td><input type="text" id="awaid_bathrooms" name="awaid_project[bathrooms]" value="<?php echo esc_attr((string) $d['bathrooms']); ?>"></td>
 			</tr>
 			<tr>
-				<th><label for="awaid_floors"><?php esc_html_e('Floors / parking', 'awaid-projects'); ?></label></th>
+				<th><label for="awaid_floors"><?php esc_html_e('Kitchens', 'awaid-projects'); ?></label></th>
 				<td><input type="text" id="awaid_floors" name="awaid_project[floors]" value="<?php echo esc_attr((string) $d['floors']); ?>"></td>
 			</tr>
 		</table>

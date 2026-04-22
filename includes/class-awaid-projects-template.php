@@ -8,6 +8,18 @@ class Awaid_Projects_Template {
 
 	public static function init(): void {
 		add_filter('template_include', [__CLASS__, 'single_template'], 99);
+		add_filter('body_class', [__CLASS__, 'body_class_single_project']);
+	}
+
+	/**
+	 * @param string[] $classes
+	 * @return string[]
+	 */
+	public static function body_class_single_project(array $classes): array {
+		if (is_singular('awaid_project')) {
+			$classes[] = 'awaid-single-project-full-width';
+		}
+		return $classes;
 	}
 
 	public static function single_template(string $template): string {
