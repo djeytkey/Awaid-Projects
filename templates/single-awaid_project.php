@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Single project template (plugin) — Riva-inspired 3/9 split (see https://riva.sa/project/aoshn-01).
  */
@@ -73,9 +74,9 @@ while (have_posts()) :
 	];
 	$specs_panel_dir = is_rtl() ? 'rtl' : 'ltr';
 
-	$render_sidebar = static function ( string $sidebar_mod ) use ( $d, $area_range, $price_range, $brochure_url, $map_url, $units, $spec_icons, $specs_panel_dir ): void {
+	$render_sidebar = static function (string $sidebar_mod) use ($d, $area_range, $price_range, $brochure_url, $map_url, $units, $spec_icons, $specs_panel_dir): void {
 		$base = 'awaid-sidebar-card ' . $sidebar_mod;
-		?>
+?>
 		<div class="<?php echo esc_attr($base); ?>">
 			<div class="awaid-sidebar-card__block">
 				<p class="awaid-sidebar-card__eyebrow"><?php esc_html_e('المطور', 'awaid-projects'); ?></p>
@@ -145,15 +146,15 @@ while (have_posts()) :
 			<?php endif; ?>
 
 			<div class="awaid-panel">
-				<ul class="awaid-meta-rows">
+				<ul class="awaid-meta-rows row post-meta mb-2">
 					<?php if (!empty($d['license'])) : ?>
-						<li>
+						<li class="col-md-6">
 							<span class="awaid-meta-rows__k"><?php esc_html_e('رخصة الاعلان', 'awaid-projects'); ?></span>
 							<span class="awaid-meta-rows__v"><?php echo esc_html((string) $d['license']); ?></span>
 						</li>
 					<?php endif; ?>
 					<?php if (!empty($d['listing_date'])) : ?>
-						<li>
+						<li class="col-md-6">
 							<span class="awaid-meta-rows__k"><?php esc_html_e('تاريخ النشر', 'awaid-projects'); ?></span>
 							<span class="awaid-meta-rows__v"><?php echo esc_html((string) $d['listing_date']); ?></span>
 						</li>
@@ -187,270 +188,273 @@ while (have_posts()) :
 				<?php endif; ?>
 			</div>
 		</div>
-		<?php
+	<?php
 	};
 	?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class($wrap_classes); ?>>
-	<section class="awaid-project-shell">
-		<div class="awaid-container-wide">
-			<div class="row awaid-split-row align-items-start">
-				<div class="col-12 col-lg-9 awaid-split-main">
-					<?php if ($has_lead_slides || $brochure_url || $map_url) : ?>
-						<div class="awaid-lead-media">
-							<?php if ($has_lead_slides) : ?>
-								<?php $slider_label = __('Project gallery', 'awaid-projects'); ?>
-								<div class="awaid-lead-slider" data-awaid-lead-slider dir="ltr">
-									<div
-										class="awaid-lead-slider__viewport"
-										data-awaid-slider-viewport
-										tabindex="0"
-										role="region"
-										aria-roledescription="carousel"
-										aria-label="<?php echo esc_attr($slider_label); ?>"
-									>
-										<?php foreach ($slides_data as $i => $row) : ?>
-											<div class="awaid-lead-slider__slide" data-awaid-slider-slide aria-roledescription="slide" aria-label="<?php echo esc_attr(sprintf(/* translators: 1: current slide, 2: total */ __('Slide %1$d of %2$d', 'awaid-projects'), $i + 1, $slide_count)); ?>">
-												<button
-													type="button"
-													class="awaid-lead-slider__open"
-													data-awaid-lightbox-open
-													data-src="<?php echo esc_url($row['full_url']); ?>"
-													data-alt="<?php echo esc_attr($row['alt']); ?>"
-													aria-haspopup="dialog"
-													aria-label="<?php esc_attr_e('Open image in lightbox', 'awaid-projects'); ?>"
-												>
-													<?php
-													echo wp_get_attachment_image(
-														$row['id'],
-														'large',
-														false,
-														[
-															'class'    => 'awaid-lead-slider__img',
-															'loading'  => $i === 0 ? 'eager' : 'lazy',
-															'decoding' => 'async',
-														]
-													);
-													?>
-												</button>
+	<article id="post-<?php the_ID(); ?>" <?php post_class($wrap_classes); ?>>
+		<section class="awaid-project-shell">
+			<div class="awaid-container-wide">
+				<div class="row awaid-split-row align-items-start">
+					<div class="col-12 col-lg-9 awaid-split-main">
+						<?php if ($has_lead_slides || $brochure_url || $map_url) : ?>
+							<div class="awaid-lead-media">
+								<?php if ($has_lead_slides) : ?>
+									<?php $slider_label = __('Project gallery', 'awaid-projects'); ?>
+									<div class="awaid-lead-slider" data-awaid-lead-slider dir="ltr">
+										<div
+											class="awaid-lead-slider__viewport"
+											data-awaid-slider-viewport
+											tabindex="0"
+											role="region"
+											aria-roledescription="carousel"
+											aria-label="<?php echo esc_attr($slider_label); ?>">
+											<?php foreach ($slides_data as $i => $row) : ?>
+												<div class="awaid-lead-slider__slide" data-awaid-slider-slide aria-roledescription="slide" aria-label="<?php echo esc_attr(sprintf(/* translators: 1: current slide, 2: total */__('Slide %1$d of %2$d', 'awaid-projects'), $i + 1, $slide_count)); ?>">
+													<button
+														type="button"
+														class="awaid-lead-slider__open"
+														data-awaid-lightbox-open
+														data-src="<?php echo esc_url($row['full_url']); ?>"
+														data-alt="<?php echo esc_attr($row['alt']); ?>"
+														aria-haspopup="dialog"
+														aria-label="<?php esc_attr_e('Open image in lightbox', 'awaid-projects'); ?>">
+														<?php
+														echo wp_get_attachment_image(
+															$row['id'],
+															'large',
+															false,
+															[
+																'class'    => 'awaid-lead-slider__img',
+																'loading'  => $i === 0 ? 'eager' : 'lazy',
+																'decoding' => 'async',
+															]
+														);
+														?>
+													</button>
+												</div>
+											<?php endforeach; ?>
+										</div>
+										<?php if ($slide_count > 1) : ?>
+											<button type="button" class="awaid-lead-slider__arrow awaid-lead-slider__arrow--prev" data-awaid-slider-prev aria-label="<?php esc_attr_e('Previous slide', 'awaid-projects'); ?>"></button>
+											<button type="button" class="awaid-lead-slider__arrow awaid-lead-slider__arrow--next" data-awaid-slider-next aria-label="<?php esc_attr_e('Next slide', 'awaid-projects'); ?>"></button>
+											<div class="awaid-lead-slider__dots" role="group" aria-label="<?php esc_attr_e('Slides', 'awaid-projects'); ?>">
+												<?php for ($d_i = 0; $d_i < $slide_count; $d_i++) : ?>
+													<button
+														type="button"
+														class="awaid-lead-slider__dot<?php echo $d_i === 0 ? ' is-active' : ''; ?>"
+														data-awaid-slider-dot="<?php echo esc_attr((string) $d_i); ?>"
+														<?php echo $d_i === 0 ? ' aria-current="true"' : ''; ?>
+														aria-label="<?php echo esc_attr(sprintf(/* translators: %d: slide number */__('Go to slide %d', 'awaid-projects'), $d_i + 1)); ?>"></button>
+												<?php endfor; ?>
 											</div>
-										<?php endforeach; ?>
+										<?php endif; ?>
 									</div>
-									<?php if ($slide_count > 1) : ?>
-										<button type="button" class="awaid-lead-slider__arrow awaid-lead-slider__arrow--prev" data-awaid-slider-prev aria-label="<?php esc_attr_e('Previous slide', 'awaid-projects'); ?>"></button>
-										<button type="button" class="awaid-lead-slider__arrow awaid-lead-slider__arrow--next" data-awaid-slider-next aria-label="<?php esc_attr_e('Next slide', 'awaid-projects'); ?>"></button>
-										<div class="awaid-lead-slider__dots" role="group" aria-label="<?php esc_attr_e('Slides', 'awaid-projects'); ?>">
-											<?php for ($d_i = 0; $d_i < $slide_count; $d_i++) : ?>
-												<button
-													type="button"
-													class="awaid-lead-slider__dot<?php echo $d_i === 0 ? ' is-active' : ''; ?>"
-													data-awaid-slider-dot="<?php echo esc_attr((string) $d_i); ?>"
-													<?php echo $d_i === 0 ? ' aria-current="true"' : ''; ?>
-													aria-label="<?php echo esc_attr(sprintf(/* translators: %d: slide number */ __('Go to slide %d', 'awaid-projects'), $d_i + 1)); ?>"
-												></button>
-											<?php endfor; ?>
+								<?php else : ?>
+									<div class="awaid-lead-media__placeholder" aria-hidden="true"></div>
+								<?php endif; ?>
+								<div class="awaid-lead-media__badges">
+									<?php if ($brochure_url) : ?>
+										<a class="awaid-float-badge" href="<?php echo esc_url($brochure_url); ?>" download><?php esc_html_e('Brochure', 'awaid-projects'); ?></a>
+									<?php endif; ?>
+									<?php if ($map_url) : ?>
+										<a class="awaid-float-badge awaid-float-badge--map" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('Map', 'awaid-projects'); ?></a>
+									<?php endif; ?>
+								</div>
+							</div>
+						<?php endif; ?>
+
+						<div class="awaid-sidebar-mobile">
+							<?php $render_sidebar('awaid-sidebar--mobile'); ?>
+						</div>
+
+						<div class="awaid-main-card">
+							<!-- <p class="awaid-main-card__crumb">
+							<a href="<?php echo esc_url(get_post_type_archive_link('awaid_project')); ?>"><?php esc_html_e('Projects', 'awaid-projects'); ?></a>
+						</p> -->
+							<h1 class="awaid-main-card__title"><?php the_title(); ?></h1>
+							<?php if (!empty($d['location'])) : ?>
+								<?php if ($map_url) : ?>
+									<a class="awaid-main-card__location" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><i class="fas fa-map-pin mr-2"></i><?php echo esc_html((string) $d['location']); ?></a>
+								<?php else : ?>
+									<p class="awaid-main-card__location"><?php echo esc_html((string) $d['location']); ?></p>
+								<?php endif; ?>
+							<?php endif; ?>
+							<?php if (get_the_content()) : ?>
+								<div class="awaid-main-card__content awaid-entry-content">
+									<?php the_content(); ?>
+								</div>
+							<?php endif; ?>
+						</div>
+
+						<?php if ($units) : ?>
+							<div class="awaid-main-card">
+								<!-- <section class="awaid-section awaid-section--inset" id="awaid-units"> -->
+								<!-- <h2 class="awaid-section__title"><?php esc_html_e('Units', 'awaid-projects'); ?></h2> -->
+								<div class="awaid-unit-filters" role="tablist" aria-label="<?php esc_attr_e('Filter units', 'awaid-projects'); ?>">
+									<button type="button" class="awaid-pill awaid-unit-filter is-active" data-filter="all" aria-pressed="true"><?php esc_html_e('All', 'awaid-projects'); ?></button>
+									<button type="button" class="awaid-pill awaid-unit-filter" data-filter="available" aria-pressed="false"><?php esc_html_e('Available', 'awaid-projects'); ?></button>
+									<button type="button" class="awaid-pill awaid-unit-filter" data-filter="reserved" aria-pressed="false"><?php esc_html_e('Reserved', 'awaid-projects'); ?></button>
+									<button type="button" class="awaid-pill awaid-unit-filter" data-filter="sold" aria-pressed="false"><?php esc_html_e('Sold', 'awaid-projects'); ?></button>
+								</div>
+								<div class="awaid-units-grid">
+									<?php foreach ($units as $unit) : ?>
+										<?php
+										$code   = isset($unit['code']) ? (string) $unit['code'] : '';
+										if ($code === '') {
+											continue;
+										}
+										$status  = isset($unit['status']) ? (string) $unit['status'] : 'available';
+										$badge   = awaid_project_status_label($status);
+										$is_sold = $status === 'sold';
+										?>
+										<article class="awaid-unit-card<?php echo $is_sold ? ' awaid-unit-card--sold' : ''; ?>" data-status="<?php echo esc_attr($status); ?>">
+											<div class="awaid-unit-card__head">
+												<span class="awaid-unit-card__code"><?php echo esc_html($code); ?></span>
+												<?php if ($is_sold) : ?>
+													<span class="awaid-badge awaid-badge--sold"><?php echo esc_html($badge); ?></span>
+												<?php endif; ?>
+											</div>
+											<?php if (!empty($unit['type'])) : ?>
+												<p class="awaid-unit-card__type"><?php echo esc_html((string) $unit['type']); ?></p>
+											<?php endif; ?>
+											<ul class="awaid-unit-card__meta">
+												<?php if (!empty($unit['price'])) : ?>
+													<li><span class="awaid-meta-label"><?php esc_html_e('Price', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['price']); ?></li>
+												<?php endif; ?>
+												<?php if (!empty($unit['area'])) : ?>
+													<li><span class="awaid-meta-label"><?php esc_html_e('Area', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['area']); ?> m²</li>
+												<?php endif; ?>
+												<?php if (!empty($unit['bedrooms'])) : ?>
+													<li><span class="awaid-meta-label"><?php esc_html_e('Bedrooms', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['bedrooms']); ?></li>
+												<?php endif; ?>
+												<?php if (!empty($unit['bathrooms'])) : ?>
+													<li><span class="awaid-meta-label"><?php esc_html_e('Bathrooms', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['bathrooms']); ?></li>
+												<?php endif; ?>
+												<?php if (!$is_sold) : ?>
+													<li><span class="awaid-meta-label"><?php esc_html_e('Status', 'awaid-projects'); ?></span> <?php echo esc_html($badge); ?></li>
+												<?php endif; ?>
+											</ul>
+										</article>
+									<?php endforeach; ?>
+								</div>
+								<!-- </section> -->
+							</div>
+						<?php endif; ?>
+
+						<?php if ($features || $warranties) : ?>
+							<div class="awaid-main-card">
+								<!-- <section class="awaid-section awaid-section--muted awaid-section--inset"> -->
+								<div class="awaid-split-inner-row<?php echo $features && $warranties ? ' awaid-split-inner-row--twocol' : ''; ?>">
+									<?php if ($features) : ?>
+										<div class="awaid-split-inner-col awaid-split-inner-col--features">
+											<h2 class="awaid-section__title"><?php esc_html_e('Features', 'awaid-projects'); ?></h2>
+											<div class="awaid-features-grid">
+												<?php foreach ($features as $f) : ?>
+													<?php
+													$t = isset($f['title']) ? trim((string) $f['title']) : '';
+													if ($t === '') {
+														continue;
+													}
+													?>
+													<div class="awaid-feature-tile">
+														<span class="awaid-feature-tile__dot" aria-hidden="true"></span>
+														<span class="awaid-feature-tile__text"><?php echo esc_html($t); ?></span>
+													</div>
+												<?php endforeach; ?>
+											</div>
+										</div>
+									<?php endif; ?>
+									<?php if ($warranties) : ?>
+										<div class="awaid-split-inner-col awaid-split-inner-col--warranties">
+											<h2 class="awaid-section__title"><?php esc_html_e('Warranties', 'awaid-projects'); ?></h2>
+											<div class="awaid-warranty-grid">
+												<?php foreach ($warranties as $w) : ?>
+													<?php
+													$t = isset($w['title']) ? trim((string) $w['title']) : '';
+													$p = isset($w['period']) ? trim((string) $w['period']) : '';
+													if ($t === '' && $p === '') {
+														continue;
+													}
+													?>
+													<div class="awaid-warranty-card">
+														<?php if ($t !== '') : ?>
+															<h3 class="awaid-warranty-card__title"><?php echo esc_html($t); ?></h3>
+														<?php endif; ?>
+														<?php if ($p !== '') : ?>
+															<p class="awaid-warranty-card__period"><?php echo esc_html($p); ?></p>
+														<?php endif; ?>
+													</div>
+												<?php endforeach; ?>
+											</div>
 										</div>
 									<?php endif; ?>
 								</div>
-							<?php else : ?>
-								<div class="awaid-lead-media__placeholder" aria-hidden="true"></div>
-							<?php endif; ?>
-							<div class="awaid-lead-media__badges">
-								<?php if ($brochure_url) : ?>
-									<a class="awaid-float-badge" href="<?php echo esc_url($brochure_url); ?>" download><?php esc_html_e('Brochure', 'awaid-projects'); ?></a>
-								<?php endif; ?>
-								<?php if ($map_url) : ?>
-									<a class="awaid-float-badge awaid-float-badge--map" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('Map', 'awaid-projects'); ?></a>
-								<?php endif; ?>
-							</div>
-						</div>
-					<?php endif; ?>
-
-					<div class="awaid-sidebar-mobile">
-						<?php $render_sidebar('awaid-sidebar--mobile'); ?>
-					</div>
-
-					<div class="awaid-main-card">
-						<p class="awaid-main-card__crumb">
-							<a href="<?php echo esc_url(get_post_type_archive_link('awaid_project')); ?>"><?php esc_html_e('Projects', 'awaid-projects'); ?></a>
-						</p>
-						<h1 class="awaid-main-card__title"><?php the_title(); ?></h1>
-						<?php if (!empty($d['location'])) : ?>
-							<?php if ($map_url) : ?>
-								<a class="awaid-main-card__location" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><?php echo esc_html((string) $d['location']); ?></a>
-							<?php else : ?>
-								<p class="awaid-main-card__location"><?php echo esc_html((string) $d['location']); ?></p>
-							<?php endif; ?>
-						<?php endif; ?>
-						<?php if (get_the_content()) : ?>
-							<div class="awaid-main-card__content awaid-entry-content">
-								<?php the_content(); ?>
+								<!-- </section> -->
 							</div>
 						<?php endif; ?>
-					</div>
 
-					<?php if ($units) : ?>
-						<section class="awaid-section awaid-section--inset" id="awaid-units">
-							<h2 class="awaid-section__title"><?php esc_html_e('Units', 'awaid-projects'); ?></h2>
-							<div class="awaid-unit-filters" role="tablist" aria-label="<?php esc_attr_e('Filter units', 'awaid-projects'); ?>">
-								<button type="button" class="awaid-pill awaid-unit-filter is-active" data-filter="all" aria-pressed="true"><?php esc_html_e('All', 'awaid-projects'); ?></button>
-								<button type="button" class="awaid-pill awaid-unit-filter" data-filter="available" aria-pressed="false"><?php esc_html_e('Available', 'awaid-projects'); ?></button>
-								<button type="button" class="awaid-pill awaid-unit-filter" data-filter="reserved" aria-pressed="false"><?php esc_html_e('Reserved', 'awaid-projects'); ?></button>
-								<button type="button" class="awaid-pill awaid-unit-filter" data-filter="sold" aria-pressed="false"><?php esc_html_e('Sold', 'awaid-projects'); ?></button>
-							</div>
-							<div class="awaid-units-grid">
-								<?php foreach ($units as $unit) : ?>
-									<?php
-									$code   = isset($unit['code']) ? (string) $unit['code'] : '';
-									if ($code === '') {
-										continue;
-									}
-									$status  = isset($unit['status']) ? (string) $unit['status'] : 'available';
-									$badge   = awaid_project_status_label($status);
-									$is_sold = $status === 'sold';
-									?>
-									<article class="awaid-unit-card<?php echo $is_sold ? ' awaid-unit-card--sold' : ''; ?>" data-status="<?php echo esc_attr($status); ?>">
-										<div class="awaid-unit-card__head">
-											<span class="awaid-unit-card__code"><?php echo esc_html($code); ?></span>
-											<?php if ($is_sold) : ?>
-												<span class="awaid-badge awaid-badge--sold"><?php echo esc_html($badge); ?></span>
-											<?php endif; ?>
-										</div>
-										<?php if (!empty($unit['type'])) : ?>
-											<p class="awaid-unit-card__type"><?php echo esc_html((string) $unit['type']); ?></p>
-										<?php endif; ?>
-										<ul class="awaid-unit-card__meta">
-											<?php if (!empty($unit['price'])) : ?>
-												<li><span class="awaid-meta-label"><?php esc_html_e('Price', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['price']); ?></li>
-											<?php endif; ?>
-											<?php if (!empty($unit['area'])) : ?>
-												<li><span class="awaid-meta-label"><?php esc_html_e('Area', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['area']); ?> m²</li>
-											<?php endif; ?>
-											<?php if (!empty($unit['bedrooms'])) : ?>
-												<li><span class="awaid-meta-label"><?php esc_html_e('Bedrooms', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['bedrooms']); ?></li>
-											<?php endif; ?>
-											<?php if (!empty($unit['bathrooms'])) : ?>
-												<li><span class="awaid-meta-label"><?php esc_html_e('Bathrooms', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['bathrooms']); ?></li>
-											<?php endif; ?>
-											<?php if (!$is_sold) : ?>
-												<li><span class="awaid-meta-label"><?php esc_html_e('Status', 'awaid-projects'); ?></span> <?php echo esc_html($badge); ?></li>
-											<?php endif; ?>
-										</ul>
-									</article>
-								<?php endforeach; ?>
-							</div>
-						</section>
-					<?php endif; ?>
-
-					<?php if ($features || $warranties) : ?>
-						<section class="awaid-section awaid-section--muted awaid-section--inset">
-							<div class="awaid-split-inner-row<?php echo $features && $warranties ? ' awaid-split-inner-row--twocol' : ''; ?>">
-								<?php if ($features) : ?>
-									<div class="awaid-split-inner-col awaid-split-inner-col--features">
-										<h2 class="awaid-section__title"><?php esc_html_e('Features', 'awaid-projects'); ?></h2>
-										<div class="awaid-features-grid">
-											<?php foreach ($features as $f) : ?>
-												<?php
-												$t = isset($f['title']) ? trim((string) $f['title']) : '';
-												if ($t === '') {
-													continue;
-												}
-												?>
-												<div class="awaid-feature-tile">
-													<span class="awaid-feature-tile__dot" aria-hidden="true"></span>
-													<span class="awaid-feature-tile__text"><?php echo esc_html($t); ?></span>
-												</div>
-											<?php endforeach; ?>
-										</div>
-									</div>
-								<?php endif; ?>
-								<?php if ($warranties) : ?>
-									<div class="awaid-split-inner-col awaid-split-inner-col--warranties">
-										<h2 class="awaid-section__title"><?php esc_html_e('Warranties', 'awaid-projects'); ?></h2>
-										<div class="awaid-warranty-grid">
-											<?php foreach ($warranties as $w) : ?>
-												<?php
-												$t = isset($w['title']) ? trim((string) $w['title']) : '';
-												$p = isset($w['period']) ? trim((string) $w['period']) : '';
-												if ($t === '' && $p === '') {
-													continue;
-												}
-												?>
-												<div class="awaid-warranty-card">
-													<?php if ($t !== '') : ?>
-														<h3 class="awaid-warranty-card__title"><?php echo esc_html($t); ?></h3>
-													<?php endif; ?>
-													<?php if ($p !== '') : ?>
-														<p class="awaid-warranty-card__period"><?php echo esc_html($p); ?></p>
-													<?php endif; ?>
-												</div>
-											<?php endforeach; ?>
-										</div>
-									</div>
-								<?php endif; ?>
-							</div>
-						</section>
-					<?php endif; ?>
-
-					<section class="awaid-section awaid-section--inset awaid-section--location">
-						<div class="awaid-location awaid-location--stack">
-							<div>
-								<h2 class="awaid-section__title"><?php esc_html_e('Project location', 'awaid-projects'); ?></h2>
-								<?php if (!empty($d['location'])) : ?>
-									<p class="awaid-location__address"><?php echo esc_html((string) $d['location']); ?></p>
-								<?php endif; ?>
-								<?php if ($map_url) : ?>
-									<a class="awaid-btn awaid-btn--primary" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('Directions', 'awaid-projects'); ?></a>
-								<?php endif; ?>
-							</div>
-							<?php if ($nearby) : ?>
-								<div class="awaid-nearby">
-									<h3 class="awaid-nearby__title"><?php esc_html_e('Nearby', 'awaid-projects'); ?></h3>
-									<ul class="awaid-nearby__list">
-										<?php foreach ($nearby as $n) : ?>
-											<?php
-											$nm = isset($n['name']) ? trim((string) $n['name']) : '';
-											$ds = isset($n['distance']) ? trim((string) $n['distance']) : '';
-											if ($nm === '' && $ds === '') {
-												continue;
-											}
-											?>
-											<li>
-												<strong><?php echo esc_html($nm); ?></strong>
-												<?php if ($ds !== '') : ?>
-													<span class="awaid-nearby__dist"><?php echo esc_html($ds); ?></span>
-												<?php endif; ?>
-											</li>
-										<?php endforeach; ?>
-									</ul>
+						<div class="awaid-main-card">
+							<!-- <section class="awaid-section awaid-section--inset awaid-section--location"> -->
+							<div class="awaid-location awaid-location--stack">
+								<div>
+									<h2 class="awaid-section__title"><?php esc_html_e('Project location', 'awaid-projects'); ?></h2>
+									<?php if (!empty($d['location'])) : ?>
+										<p class="awaid-location__address"><?php echo esc_html((string) $d['location']); ?></p>
+									<?php endif; ?>
+									<?php if ($map_url) : ?>
+										<a class="awaid-btn awaid-btn--primary" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('Directions', 'awaid-projects'); ?></a>
+									<?php endif; ?>
 								</div>
-							<?php endif; ?>
+								<?php if ($nearby) : ?>
+									<div class="awaid-nearby">
+										<h3 class="awaid-nearby__title"><?php esc_html_e('Nearby', 'awaid-projects'); ?></h3>
+										<ul class="awaid-nearby__list">
+											<?php foreach ($nearby as $n) : ?>
+												<?php
+												$nm = isset($n['name']) ? trim((string) $n['name']) : '';
+												$ds = isset($n['distance']) ? trim((string) $n['distance']) : '';
+												if ($nm === '' && $ds === '') {
+													continue;
+												}
+												?>
+												<li>
+													<strong><?php echo esc_html($nm); ?></strong>
+													<?php if ($ds !== '') : ?>
+														<span class="awaid-nearby__dist"><?php echo esc_html($ds); ?></span>
+													<?php endif; ?>
+												</li>
+											<?php endforeach; ?>
+										</ul>
+									</div>
+								<?php endif; ?>
+							</div>
+							<!-- </section> -->
 						</div>
-					</section>
+					</div>
+
+					<aside class="col-12 col-lg-3 awaid-split-sidebar">
+						<?php $render_sidebar('awaid-sidebar--desktop'); ?>
+					</aside>
 				</div>
-
-				<aside class="col-12 col-lg-3 awaid-split-sidebar">
-					<?php $render_sidebar('awaid-sidebar--desktop'); ?>
-				</aside>
 			</div>
-		</div>
-	</section>
-	<?php if ($has_lead_slides) : ?>
-		<div class="awaid-lightbox" id="awaid-project-lightbox" data-awaid-lightbox hidden>
-			<div class="awaid-lightbox__backdrop" data-awaid-lightbox-close tabindex="-1"></div>
-			<div class="awaid-lightbox__dialog" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e('Enlarged image', 'awaid-projects'); ?>">
-				<button type="button" class="awaid-lightbox__close" data-awaid-lightbox-close aria-label="<?php esc_attr_e('Close', 'awaid-projects'); ?>"></button>
-				<?php if ($slide_count > 1) : ?>
-					<button type="button" class="awaid-lightbox__arrow awaid-lightbox__arrow--prev" data-awaid-lightbox-prev aria-label="<?php esc_attr_e('Previous image', 'awaid-projects'); ?>"></button>
-					<button type="button" class="awaid-lightbox__arrow awaid-lightbox__arrow--next" data-awaid-lightbox-next aria-label="<?php esc_attr_e('Next image', 'awaid-projects'); ?>"></button>
-				<?php endif; ?>
-				<img class="awaid-lightbox__img" src="" alt="" data-awaid-lightbox-img decoding="async">
+		</section>
+		<?php if ($has_lead_slides) : ?>
+			<div class="awaid-lightbox" id="awaid-project-lightbox" data-awaid-lightbox hidden>
+				<div class="awaid-lightbox__backdrop" data-awaid-lightbox-close tabindex="-1"></div>
+				<div class="awaid-lightbox__dialog" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e('Enlarged image', 'awaid-projects'); ?>">
+					<button type="button" class="awaid-lightbox__close" data-awaid-lightbox-close aria-label="<?php esc_attr_e('Close', 'awaid-projects'); ?>"></button>
+					<?php if ($slide_count > 1) : ?>
+						<button type="button" class="awaid-lightbox__arrow awaid-lightbox__arrow--prev" data-awaid-lightbox-prev aria-label="<?php esc_attr_e('Previous image', 'awaid-projects'); ?>"></button>
+						<button type="button" class="awaid-lightbox__arrow awaid-lightbox__arrow--next" data-awaid-lightbox-next aria-label="<?php esc_attr_e('Next image', 'awaid-projects'); ?>"></button>
+					<?php endif; ?>
+					<img class="awaid-lightbox__img" src="" alt="" data-awaid-lightbox-img decoding="async">
+				</div>
 			</div>
-		</div>
-	<?php endif; ?>
-</article>
+		<?php endif; ?>
+	</article>
 
-	<?php
+<?php
 endwhile;
 
 get_footer();
