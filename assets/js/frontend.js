@@ -111,6 +111,10 @@
 		if (!lb) {
 			return;
 		}
+		if (lb.getAttribute('data-awaid-bound') === '1') {
+			return;
+		}
+		lb.setAttribute('data-awaid-bound', '1');
 		var img = lb.querySelector('[data-awaid-lightbox-img]');
 		var btnPrev = lb.querySelector('[data-awaid-lightbox-prev]');
 		var btnNext = lb.querySelector('[data-awaid-lightbox-next]');
@@ -167,6 +171,10 @@
 				return;
 			}
 			e.preventDefault();
+			e.stopPropagation();
+			if (typeof e.stopImmediatePropagation === 'function') {
+				e.stopImmediatePropagation();
+			}
 			refreshItems();
 			idx = items.indexOf(t);
 			show(idx >= 0 ? idx : 0);
@@ -424,6 +432,10 @@
 		if (!scriptEl || !modal) {
 			return;
 		}
+		if (modal.getAttribute('data-awaid-bound') === '1') {
+			return;
+		}
+		modal.setAttribute('data-awaid-bound', '1');
 		var payload;
 		try {
 			payload = JSON.parse(scriptEl.textContent || '{}');
@@ -467,9 +479,9 @@
 				p.push('<div class="awaid-unit-modal__swiper-shell" dir="ltr"><div class="swiper awaid-unit-modal__swiper"><div class="swiper-wrapper">');
 				u.gallery.forEach(function (g) {
 					p.push(
-						'<div class="swiper-slide"><a class="awaid-unit-modal__slide-link item-link" href="' +
+						'<div class="swiper-slide"><a class="awaid-unit-modal__slide-link" href="' +
 							awaidEsc(g.full) +
-							'" data-awaid-lightbox-open data-src="' +
+							'" data-awaid-lightbox-open data-elementor-open-lightbox="no" data-src="' +
 							awaidEsc(g.full) +
 							'" data-alt="' +
 							awaidEsc(g.alt) +
