@@ -8,7 +8,8 @@ class Awaid_Projects_Assets {
 
 	public static function init(): void {
 		add_action('admin_enqueue_scripts', [__CLASS__, 'admin_assets']);
-		add_action('wp_enqueue_scripts', [__CLASS__, 'frontend_assets']);
+		// Late so overrides load after theme + Elementor frontend.
+		add_action('wp_enqueue_scripts', [__CLASS__, 'frontend_assets'], 100);
 	}
 
 	public static function admin_assets(string $hook): void {
@@ -58,17 +59,40 @@ class Awaid_Projects_Assets {
 			return;
 		}
 
+		$style_deps = [];
+		if (wp_style_is('rehomes-style', 'registered')) {
+			$style_deps[] = 'rehomes-style';
+		}
+		if (wp_style_is('elementor-frontend', 'registered')) {
+			$style_deps[] = 'elementor-frontend';
+		}
+
+		wp_register_style(
+			'swiper',
+			'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+			[],
+			'11.1.15'
+		);
+		wp_register_script(
+			'swiper',
+			'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+			[],
+			'11.1.15',
+			true
+		);
+
+		wp_enqueue_style('swiper');
 		wp_enqueue_style(
 			'awaid-projects-frontend',
 			AWAID_PROJECTS_URL . 'assets/css/frontend.css',
-			[],
+			array_merge(['swiper'], $style_deps),
 			AWAID_PROJECTS_VERSION
 		);
 
 		wp_enqueue_script(
 			'awaid-projects-frontend',
 			AWAID_PROJECTS_URL . 'assets/js/frontend.js',
-			[],
+			['swiper'],
 			AWAID_PROJECTS_VERSION,
 			true
 		);

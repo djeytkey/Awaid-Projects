@@ -29,84 +29,75 @@
 		});
 	}
 
-	function initLeadSlider(root) {
-		var slider = root.querySelector('[data-awaid-lead-slider]');
-		if (!slider) {
+	/**
+	 * Swiper gallery (Riva-style: nav only, spaceBetween from data-margin).
+	 */
+	function initProjectSwiper(root) {
+		var shell = root.querySelector('[data-awaid-swiper]');
+		if (!shell || typeof Swiper === 'undefined') {
 			return;
 		}
-		var vp = slider.querySelector('[data-awaid-slider-viewport]');
-		if (!vp) {
+		var el = shell.querySelector('.swiper');
+		if (!el) {
 			return;
 		}
-		var prev = slider.querySelector('[data-awaid-slider-prev]');
-		var next = slider.querySelector('[data-awaid-slider-next]');
-		var dots = slider.querySelectorAll('[data-awaid-slider-dot]');
-		var slides = vp.querySelectorAll('[data-awaid-slider-slide]');
-		var n = slides.length;
-		if (!n) {
+		var slides = el.querySelectorAll('.swiper-slide');
+		if (!slides.length) {
 			return;
 		}
+		var margin = parseInt(shell.getAttribute('data-margin'), 10);
+		if (isNaN(margin)) {
+			margin = 10;
+		}
+		var navNext = shell.querySelector('.swiper-button-next');
+		var navPrev = shell.querySelector('.swiper-button-prev');
+		var opts = {
+			slidesPerView: 1,
+			spaceBetween: margin,
+			speed: 450,
+			roundLengths: true,
+			watchOverflow: true,
+			autoHeight: true,
+			observer: true,
+			observeParents: true,
+			observeSlideChildren: true,
+		};
+		/* Do not set Swiper `rtl`: it reverses slide flow vs. arrow glyphs and feels “wrong” on RTL pages.
+		   Gallery is forced LTR via dir="ltr" on the shell (see template + CSS). */
+		if (navNext && navPrev && slides.length > 1) {
+			opts.navigation = {
+				nextEl: navNext,
+				prevEl: navPrev,
+			};
+		}
+		var swiper = new Swiper(el, opts);
 
-		function slideWidth() {
-			return vp.clientWidth || 1;
+		var resizeTimer;
+		function refit() {
+			if (swiper && typeof swiper.update === 'function') {
+				swiper.update();
+			}
+			if (swiper && swiper.params && swiper.params.autoHeight && typeof swiper.updateAutoHeight === 'function') {
+				swiper.updateAutoHeight(0);
+			}
 		}
 
-		function syncDots(active) {
-			dots.forEach(function (d, idx) {
-				var on = idx === active;
-				d.classList.toggle('is-active', on);
-				if (on) {
-					d.setAttribute('aria-current', 'true');
-				} else {
-					d.removeAttribute('aria-current');
-				}
-			});
-		}
-
-		function currentIndex() {
-			var w = slideWidth();
-			return Math.round(vp.scrollLeft / w);
-		}
-
-		function goIndex(i) {
-			i = ((i % n) + n) % n;
-			vp.scrollTo({ left: i * slideWidth(), behavior: 'smooth' });
-			syncDots(i);
-		}
-
-		var scrollTimer;
-		vp.addEventListener(
-			'scroll',
+		el.querySelectorAll('.awaid-slide-img').forEach(function (img) {
+			if (img.complete) {
+				return;
+			}
+			img.addEventListener('load', refit, { passive: true });
+		});
+		window.addEventListener(
+			'resize',
 			function () {
-				clearTimeout(scrollTimer);
-				scrollTimer = setTimeout(function () {
-					syncDots(currentIndex());
-				}, 80);
+				clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(refit, 120);
 			},
 			{ passive: true }
 		);
 
-		if (prev) {
-			prev.addEventListener('click', function (e) {
-				e.preventDefault();
-				goIndex(currentIndex() - 1);
-			});
-		}
-		if (next) {
-			next.addEventListener('click', function (e) {
-				e.preventDefault();
-				goIndex(currentIndex() + 1);
-			});
-		}
-		dots.forEach(function (d) {
-			d.addEventListener('click', function (e) {
-				e.preventDefault();
-				var idx = parseInt(d.getAttribute('data-awaid-slider-dot'), 10);
-				if (!isNaN(idx)) {
-					goIndex(idx);
-				}
-			});
-		});
+		requestAnimationFrame(refit);
 	}
 
 	function initLightbox(root) {
@@ -400,7 +391,7 @@
 		var root = document.querySelector('.awaid-project');
 		if (root) {
 			initFilters(root);
-			initLeadSlider(root);
+			initProjectSwiper(root);
 			initLightbox(root);
 			initDesktopSidebarSticky(root);
 		}

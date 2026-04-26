@@ -198,69 +198,95 @@ while (have_posts()) :
 				<div class="row awaid-split-row align-items-start">
 					<div class="col-12 col-lg-9 awaid-split-main">
 						<?php if ($has_lead_slides || $brochure_url || $map_url) : ?>
-							<div class="awaid-lead-media">
+							<?php
+							$awaid_lead_dir = is_rtl() ? 'rtl' : 'ltr';
+							$awaid_brochure_label = __('حمل الملف التعريفي', 'awaid-projects');
+							?>
+							<div class="awaid-lead-media awaid-lead-media--card">
+								<?php if ($brochure_url) : ?>
+									<a
+										class="awaid-hero-floating awaid-hero-floating--brochure<?php echo $map_url ? '' : ' awaid-hero-floating--brochure-only'; ?>"
+										href="<?php echo esc_url($brochure_url); ?>"
+										download
+										dir="<?php echo esc_attr($awaid_lead_dir); ?>">
+										<span class="awaid-hero-badge">
+											<?php echo esc_html($awaid_brochure_label); ?>
+											<i class="fa fa-download awaid-hero-badge__icon" aria-hidden="true"></i>
+										</span>
+									</a>
+								<?php endif; ?>
+								<?php if ($map_url) : ?>
+									<a
+										class="awaid-hero-floating awaid-hero-floating--map"
+										href="<?php echo esc_url($map_url); ?>"
+										target="_blank"
+										rel="noopener"
+										dir="<?php echo esc_attr($awaid_lead_dir); ?>">
+										<span class="awaid-hero-badge awaid-hero-badge--icon-only">
+											<i class="fa fa-map-marker" aria-hidden="true"></i>
+											<span class="awaid-sr-only"><?php esc_html_e('Open in Google Maps', 'awaid-projects'); ?></span>
+										</span>
+									</a>
+								<?php endif; ?>
+
 								<?php if ($has_lead_slides) : ?>
-									<?php $slider_label = __('Project gallery', 'awaid-projects'); ?>
-									<div class="awaid-lead-slider" data-awaid-lead-slider dir="ltr">
-										<div
-											class="awaid-lead-slider__viewport"
-											data-awaid-slider-viewport
-											tabindex="0"
-											role="region"
-											aria-roledescription="carousel"
-											aria-label="<?php echo esc_attr($slider_label); ?>">
-											<?php foreach ($slides_data as $i => $row) : ?>
-												<div class="awaid-lead-slider__slide" data-awaid-slider-slide aria-roledescription="slide" aria-label="<?php echo esc_attr(sprintf(/* translators: 1: current slide, 2: total */__('Slide %1$d of %2$d', 'awaid-projects'), $i + 1, $slide_count)); ?>">
-													<button
-														type="button"
-														class="awaid-lead-slider__open"
-														data-awaid-lightbox-open
-														data-src="<?php echo esc_url($row['full_url']); ?>"
-														data-alt="<?php echo esc_attr($row['alt']); ?>"
-														aria-haspopup="dialog"
-														aria-label="<?php esc_attr_e('Open image in lightbox', 'awaid-projects'); ?>">
-														<?php
-														echo wp_get_attachment_image(
-															$row['id'],
-															'large',
-															false,
-															[
-																'class'    => 'awaid-lead-slider__img',
-																'loading'  => $i === 0 ? 'eager' : 'lazy',
-																'decoding' => 'async',
-															]
-														);
-														?>
-													</button>
-												</div>
-											<?php endforeach; ?>
+									<div
+										class="awaid-swiper-shell"
+										dir="ltr"
+										data-awaid-swiper
+										data-margin="10"
+										data-dots="false"
+										data-nav="true">
+										<div class="swiper awaid-project-swiper">
+											<div class="swiper-wrapper">
+												<?php foreach ($slides_data as $i => $row) : ?>
+													<div class="swiper-slide">
+														<a
+															class="item-link"
+															href="<?php echo esc_url($row['full_url']); ?>"
+															data-awaid-lightbox-open
+															data-src="<?php echo esc_url($row['full_url']); ?>"
+															data-alt="<?php echo esc_attr($row['alt']); ?>"
+															aria-label="<?php esc_attr_e('Open image in lightbox', 'awaid-projects'); ?>">
+															<figure class="awaid-slide-figure">
+																<?php
+																echo wp_get_attachment_image(
+																	$row['id'],
+																	'large',
+																	false,
+																	[
+																		'class'    => 'awaid-slide-img',
+																		'loading'  => $i === 0 ? 'eager' : 'lazy',
+																		'decoding' => 'async',
+																	]
+																);
+																?>
+															</figure>
+														</a>
+													</div>
+												<?php endforeach; ?>
+											</div>
 										</div>
 										<?php if ($slide_count > 1) : ?>
-											<button type="button" class="awaid-lead-slider__arrow awaid-lead-slider__arrow--prev" data-awaid-slider-prev aria-label="<?php esc_attr_e('Previous slide', 'awaid-projects'); ?>"></button>
-											<button type="button" class="awaid-lead-slider__arrow awaid-lead-slider__arrow--next" data-awaid-slider-next aria-label="<?php esc_attr_e('Next slide', 'awaid-projects'); ?>"></button>
-											<div class="awaid-lead-slider__dots" role="group" aria-label="<?php esc_attr_e('Slides', 'awaid-projects'); ?>">
-												<?php for ($d_i = 0; $d_i < $slide_count; $d_i++) : ?>
-													<button
-														type="button"
-														class="awaid-lead-slider__dot<?php echo $d_i === 0 ? ' is-active' : ''; ?>"
-														data-awaid-slider-dot="<?php echo esc_attr((string) $d_i); ?>"
-														<?php echo $d_i === 0 ? ' aria-current="true"' : ''; ?>
-														aria-label="<?php echo esc_attr(sprintf(/* translators: %d: slide number */__('Go to slide %d', 'awaid-projects'), $d_i + 1)); ?>"></button>
-												<?php endfor; ?>
+											<div class="swiper-controls awaid-swiper-controls">
+												<div class="swiper-navigation">
+													<div
+														class="swiper-button-prev awaid-swiper-nav-btn"
+														tabindex="0"
+														role="button"
+														aria-label="<?php esc_attr_e('Previous slide', 'awaid-projects'); ?>"></div>
+													<div
+														class="swiper-button-next awaid-swiper-nav-btn"
+														tabindex="0"
+														role="button"
+														aria-label="<?php esc_attr_e('Next slide', 'awaid-projects'); ?>"></div>
+												</div>
 											</div>
 										<?php endif; ?>
 									</div>
 								<?php else : ?>
 									<div class="awaid-lead-media__placeholder" aria-hidden="true"></div>
 								<?php endif; ?>
-								<div class="awaid-lead-media__badges">
-									<?php if ($brochure_url) : ?>
-										<a class="awaid-float-badge" href="<?php echo esc_url($brochure_url); ?>" download><?php esc_html_e('Brochure', 'awaid-projects'); ?></a>
-									<?php endif; ?>
-									<?php if ($map_url) : ?>
-										<a class="awaid-float-badge awaid-float-badge--map" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('Map', 'awaid-projects'); ?></a>
-									<?php endif; ?>
-								</div>
 							</div>
 						<?php endif; ?>
 

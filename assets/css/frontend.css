@@ -1,5 +1,23 @@
 /* Awaid Projects — single layout (RTL-aware) */
 
+/* Full single template: Lama Sans (face is typically registered by Elementor/theme). */
+body.single-awaid_project {
+	font-family: "Lama Sans", sans-serif;
+}
+
+/* Theme / Elementor often assign Cairo (or kit fonts) to headings — override for this CPT. */
+body.single-awaid_project h1,
+body.single-awaid_project h2,
+body.single-awaid_project h3,
+body.single-awaid_project .typo-heading,
+body.single-awaid_project .page-title,
+body.single-awaid_project .page-title.typo-heading,
+body.single-awaid_project .elementor-heading-title,
+body.single-awaid_project .awaid-main-card__title,
+body.single-awaid_project .awaid-section__title {
+	font-family: "Lama Sans", sans-serif !important;
+}
+
 .awaid-project {
 	--awaid-ink: #0f172a;
 	--awaid-muted: #64748b;
@@ -11,7 +29,7 @@
 	--awaid-radius: 14px;
 	--awaid-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
 	color: var(--awaid-ink);
-	font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	font-family: "Lama Sans", sans-serif;
 	line-height: 1.6;
 }
 
@@ -654,8 +672,12 @@
 	transform: none;
 }
 
+/* Lead gallery: Riva-style card, floating badges, Swiper (nav only, data-margin spacing). */
 .awaid-lead-media {
 	position: relative;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
 	border-radius: var(--awaid-radius);
 	overflow: hidden;
 	margin-bottom: 1.5rem;
@@ -663,147 +685,183 @@
 	background: var(--awaid-surface-2);
 }
 
-.awaid-lead-media__img {
-	display: block;
-	width: 100%;
-	max-height: min(550px, 70vh);
-	object-fit: cover;
+.awaid-lead-media--card {
+	box-shadow: none;
+	margin-bottom: 2.5rem;
 }
 
-.awaid-lead-slider {
-	position: relative;
+.awaid-hero-floating {
+	position: absolute;
+	top: 10px;
+	z-index: 100;
+	text-decoration: none;
+	color: inherit;
 }
 
-.awaid-lead-slider__viewport {
-	display: flex;
-	overflow-x: auto;
-	scroll-snap-type: x mandatory;
-	scroll-behavior: smooth;
-	-webkit-overflow-scrolling: touch;
-	scrollbar-width: none;
+.awaid-hero-floating--map {
+	inset-inline-start: 10px;
 }
 
-.awaid-lead-slider__viewport::-webkit-scrollbar {
-	display: none;
+.awaid-hero-floating--brochure {
+	inset-inline-start: 66px;
 }
 
-.awaid-lead-slider__slide {
-	flex: 0 0 100%;
-	scroll-snap-align: start;
-	min-width: 100%;
-	box-sizing: border-box;
+.awaid-hero-floating--brochure-only {
+	inset-inline-start: 10px;
 }
 
-.awaid-lead-slider__open {
-	display: block;
-	width: 100%;
-	padding: 0;
-	margin: 0;
-	border: 0;
-	background: none;
-	cursor: pointer;
-	line-height: 0;
+.awaid-hero-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 1rem;
+	border-radius: 0.65rem;
+	font-size: 0.95rem;
+	font-weight: 600;
+	line-height: 1.2;
+	color: #fff;
+	background: rgba(15, 23, 42, 0.45);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
 }
 
-.awaid-lead-slider__open:focus-visible {
+.awaid-hero-badge--icon-only {
+	padding: 1rem;
+	font-size: 1.25rem;
+}
+
+.awaid-hero-floating:focus-visible .awaid-hero-badge {
 	outline: 3px solid var(--awaid-accent-2);
 	outline-offset: 2px;
 }
 
-.awaid-lead-slider__img {
-	display: block;
+.awaid-swiper-shell {
+	position: relative;
 	width: 100%;
-	max-height: min(550px, 70vh);
-	object-fit: cover;
+	max-width: 100%;
+	box-sizing: border-box;
+	direction: ltr;
 }
 
-.awaid-lead-slider__arrow {
+.awaid-swiper-shell .swiper {
+	width: 100%;
+	max-width: 100%;
+	border-radius: var(--awaid-radius);
+	overflow: hidden;
+}
+
+.awaid-swiper-shell .swiper-wrapper {
+	box-sizing: border-box;
+}
+
+.awaid-swiper-shell .swiper-slide {
+	box-sizing: border-box;
+	height: auto;
+}
+
+.awaid-swiper-shell .item-link {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	text-decoration: none;
+	color: inherit;
+	cursor: zoom-in;
+}
+
+.awaid-swiper-shell .item-link:focus-visible {
+	outline: 3px solid var(--awaid-accent-2);
+	outline-offset: 2px;
+}
+
+.awaid-slide-figure {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	margin: 0;
+	border-radius: var(--awaid-radius);
+	overflow: hidden;
+	line-height: 0;
+	background: #e2e8f0;
+}
+
+.awaid-slide-img {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+	/* max-height: min(550px, 78vh); */
+	margin: 0;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* Overlay nav on the gallery (not below). Shell matches swiper height. */
+.awaid-swiper-controls {
 	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 3;
-	width: 42px;
-	height: 42px;
-	border: 0;
-	border-radius: 999px;
-	background: rgba(15, 23, 42, 0.55);
-	color: #fff;
-	cursor: pointer;
+	inset: 0;
+	z-index: 6;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.awaid-lead-slider__arrow:hover {
-	background: rgba(15, 23, 42, 0.75);
-}
-
-.awaid-lead-slider__arrow--prev {
-	inset-inline-start: 10px;
-}
-
-.awaid-lead-slider__arrow--next {
-	inset-inline-end: 10px;
-}
-
-.awaid-lead-slider__arrow--prev::after,
-.awaid-lead-slider__arrow--next::after {
-	font-size: 1.35rem;
-	line-height: 1;
-	font-weight: 700;
-}
-
-.awaid-lead-slider__arrow--prev::after {
-	content: '\2039';
-}
-
-.awaid-lead-slider__arrow--next::after {
-	content: '\203A';
-}
-
-.awaid-lead-slider__dots {
-	position: absolute;
-	bottom: 12px;
-	left: 50%;
-	transform: translateX(-50%);
-	z-index: 3;
-	display: flex;
-	gap: 8px;
-	padding: 6px 10px;
-	border-radius: 999px;
-	background: rgba(15, 23, 42, 0.35);
-}
-
-.awaid-lead-slider__dot {
-	width: 8px;
-	height: 8px;
 	padding: 0;
-	border: 0;
-	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.45);
-	cursor: pointer;
-	transition: background 0.15s ease, transform 0.15s ease;
+	pointer-events: none;
 }
 
-.awaid-lead-slider__dot.is-active {
-	background: #fff;
-	transform: scale(1.15);
+.awaid-swiper-controls .swiper-navigation {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	min-height: 80px;
+	pointer-events: none;
+}
+
+.awaid-swiper-shell .swiper-button-prev,
+.awaid-swiper-shell .swiper-button-next {
+	position: absolute;
+	top: 50%;
+	margin: 0;
+	width: 44px;
+	height: 44px;
+	border-radius: 999px;
+	background: rgba(15, 23, 42, 0.5);
+	color: #fff;
+	pointer-events: auto;
+	transform: translateY(-50%);
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.awaid-swiper-shell .swiper-button-prev {
+	left: 12px;
+	right: auto;
+}
+
+.awaid-swiper-shell .swiper-button-next {
+	right: 12px;
+	left: auto;
+}
+
+.awaid-swiper-shell .swiper-button-prev::after,
+.awaid-swiper-shell .swiper-button-next::after {
+	font-size: 1rem;
+	font-weight: 700;
+	color: #fff;
+}
+
+.awaid-swiper-shell .swiper-button-prev:hover,
+.awaid-swiper-shell .swiper-button-next:hover {
+	background: rgba(15, 23, 42, 0.72);
+}
+
+.awaid-swiper-shell .swiper-button-disabled {
+	opacity: 0.35;
+	pointer-events: none;
 }
 
 .awaid-lead-media__placeholder {
 	min-height: 280px;
 	background: linear-gradient(145deg, #e2e8f0, #f8fafc);
-}
-
-.awaid-lead-media__badges {
-	position: absolute;
-	top: 12px;
-	inset-inline-start: 12px;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 8px;
-	z-index: 4;
 }
 
 html.awaid-lightbox-on {
@@ -923,23 +981,6 @@ html.awaid-lightbox-on {
 	content: '\203A';
 }
 
-.awaid-float-badge {
-	display: inline-flex;
-	align-items: center;
-	padding: 0.45rem 0.85rem;
-	border-radius: 0.5rem;
-	font-size: 0.8rem;
-	font-weight: 600;
-	text-decoration: none;
-	color: #fff;
-	background: linear-gradient(135deg, #0d6efd, #0b5ed7);
-	box-shadow: 0 4px 14px rgba(13, 110, 253, 0.35);
-}
-
-.awaid-float-badge--map {
-	background: linear-gradient(135deg, #0f172a, #334155);
-}
-
 .awaid-main-card {
 	background: #fff;
 	border: 1px solid var(--awaid-line);
@@ -1037,6 +1078,61 @@ body.awaid-single-project-full-width article.awaid-project {
 body.awaid-single-project-full-width .awaid-project .awaid-container-wide {
 	max-width: none;
 	width: 100%;
+}
+
+/* Theme page title / breadcrumb strip — project template has its own H1. */
+body.awaid-single-project-full-width #page-title-bar,
+body.single-awaid_project #page-title-bar {
+	display: none !important;
+}
+
+/*
+ * Single project: dark masthead.
+ * Rehomes wraps content in an inner div.site-header (theme .site-header { background:#fff }) — override that too.
+ */
+body.single-awaid_project #masthead.site-header,
+body.single-awaid_project #masthead > .site-header {
+	background: #173e62 !important;
+	color: rgba(255, 255, 255, 0.92);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.single-awaid_project #masthead #opal-header-content.header-content {
+	background: transparent !important;
+	border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Elementor: classic sections + container (e-con) headers; use shorthand to beat inline background. */
+body.single-awaid_project #masthead .elementor-location-header,
+body.single-awaid_project #masthead .elementor-location-header .elementor-section-wrap,
+body.single-awaid_project #masthead .elementor-location-header .elementor-top-section,
+body.single-awaid_project #masthead .elementor-location-header .elementor-section.elementor-section-boxed,
+body.single-awaid_project #masthead .elementor-location-header .e-con.e-parent {
+	background: #0b1220 !important;
+}
+
+body.single-awaid_project #masthead .site-title a,
+body.single-awaid_project #masthead .site-description,
+body.single-awaid_project #masthead .main-navigation a,
+body.single-awaid_project #masthead .navigation-top .main-navigation a,
+body.single-awaid_project #masthead .opal-icon-search,
+body.single-awaid_project #masthead .menu-toggle,
+body.single-awaid_project #masthead .menu-toggle .m-text {
+	color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.single-awaid_project #masthead .main-navigation a:hover,
+body.single-awaid_project #masthead .site-title a:hover {
+	color: #fff !important;
+}
+
+body.single-awaid_project #masthead .elementor-widget-nav-menu .elementor-nav-menu a,
+body.single-awaid_project #masthead .elementor-widget-heading .elementor-heading-title {
+	color: rgba(255, 255, 255, 0.92) !important;
+}
+
+body.single-awaid_project #masthead .elementor-widget-nav-menu .elementor-nav-menu a:hover {
+	color: #fff !important;
 }
 
 /*
