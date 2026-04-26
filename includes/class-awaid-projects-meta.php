@@ -170,14 +170,46 @@ class Awaid_Projects_Meta {
 			if (!in_array($status, $allowed_status, true)) {
 				$status = 'available';
 			}
+
+			$ug_csv = isset($row['gallery_csv']) ? (string) $row['gallery_csv'] : '';
+			$ug_ids  = array_filter(array_map('absint', preg_split('/\s*,\s*/', $ug_csv)));
+			$gallery_ids_unit = [];
+			foreach (array_unique($ug_ids) as $ugid) {
+				if ($ugid && wp_attachment_is_image($ugid)) {
+					$gallery_ids_unit[] = $ugid;
+				}
+			}
+
+			$high_in = isset($row['highlights']) && is_array($row['highlights']) ? $row['highlights'] : [];
+			$highlights = [];
+			foreach ($high_in as $h) {
+				$icon = isset($h['icon']) ? esc_url_raw((string) $h['icon']) : '';
+				$ht    = isset($h['title']) ? sanitize_text_field((string) $h['title']) : '';
+				$htxt  = isset($h['text']) ? sanitize_textarea_field((string) $h['text']) : '';
+				if ($icon !== '' || $ht !== '' || $htxt !== '') {
+					$highlights[] = [
+						'icon'  => $icon,
+						'title' => $ht,
+						'text'  => $htxt,
+					];
+				}
+			}
+
 			$out['units'][] = [
-				'code'     => $code,
-				'type'     => isset($row['type']) ? sanitize_text_field((string) $row['type']) : '',
-				'price'    => isset($row['price']) ? sanitize_text_field((string) $row['price']) : '',
-				'area'     => isset($row['area']) ? sanitize_text_field((string) $row['area']) : '',
-				'bedrooms' => isset($row['bedrooms']) ? sanitize_text_field((string) $row['bedrooms']) : '',
-				'bathrooms'=> isset($row['bathrooms']) ? sanitize_text_field((string) $row['bathrooms']) : '',
-				'status'   => $status,
+				'code'         => $code,
+				'type'         => isset($row['type']) ? sanitize_text_field((string) $row['type']) : '',
+				'price'        => isset($row['price']) ? sanitize_text_field((string) $row['price']) : '',
+				'area'         => isset($row['area']) ? sanitize_text_field((string) $row['area']) : '',
+				'bedrooms'     => isset($row['bedrooms']) ? sanitize_text_field((string) $row['bedrooms']) : '',
+				'bathrooms'    => isset($row['bathrooms']) ? sanitize_text_field((string) $row['bathrooms']) : '',
+				'status'       => $status,
+				'gallery_ids'  => $gallery_ids_unit,
+				'description'  => isset($row['description']) ? sanitize_textarea_field((string) $row['description']) : '',
+				'floor'        => isset($row['floor']) ? sanitize_text_field((string) $row['floor']) : '',
+				'kitchens'     => isset($row['kitchens']) ? sanitize_text_field((string) $row['kitchens']) : '',
+				'whatsapp'     => isset($row['whatsapp']) ? sanitize_text_field((string) $row['whatsapp']) : '',
+				'phone'        => isset($row['phone']) ? sanitize_text_field((string) $row['phone']) : '',
+				'highlights'   => $highlights,
 			];
 		}
 

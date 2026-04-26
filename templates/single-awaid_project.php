@@ -74,6 +74,116 @@ while (have_posts()) :
 	];
 	$specs_panel_dir = is_rtl() ? 'rtl' : 'ltr';
 
+	$awaid_unit_defaults = [
+		'code' => '',
+		'type' => '',
+		'price' => '',
+		'area' => '',
+		'bedrooms' => '',
+		'bathrooms' => '',
+		'status' => 'available',
+		'gallery_ids' => [],
+		'description' => '',
+		'floor' => '',
+		'kitchens' => '',
+		'whatsapp' => '',
+		'phone' => '',
+		'highlights' => [],
+	];
+	$units_modal_units = [];
+	foreach ($units as $u_raw) {
+		$u = array_merge($awaid_unit_defaults, is_array($u_raw) ? $u_raw : []);
+		$code = trim((string) ($u['code'] ?? ''));
+		if ($code === '') {
+			continue;
+		}
+		$ug_ids = isset($u['gallery_ids']) && is_array($u['gallery_ids']) ? $u['gallery_ids'] : [];
+		$unit_gallery = [];
+		foreach ($ug_ids as $ug) {
+			$ug = absint($ug);
+			if (!$ug || !wp_attachment_is_image($ug)) {
+				continue;
+			}
+			$full_u = wp_get_attachment_image_url($ug, 'full');
+			if (!$full_u) {
+				continue;
+			}
+			$large_u = wp_get_attachment_image_url($ug, 'large') ?: $full_u;
+			$alt_u    = trim((string) get_post_meta($ug, '_wp_attachment_image_alt', true));
+			if ($alt_u === '') {
+				$alt_u = get_the_title() . ' — ' . $code;
+			}
+			$unit_gallery[] = [
+				'full'  => $full_u,
+				'large' => $large_u,
+				'alt'   => $alt_u,
+			];
+		}
+		$uhl = [];
+		foreach (is_array($u['highlights'] ?? null) ? $u['highlights'] : [] as $h) {
+			$uhl[] = [
+				'icon'  => isset($h['icon']) ? (string) $h['icon'] : '',
+				'title' => isset($h['title']) ? (string) $h['title'] : '',
+				'text'  => isset($h['text']) ? (string) $h['text'] : '',
+			];
+		}
+		$wa_raw = trim((string) ($u['whatsapp'] ?? ''));
+		$wa_digits = preg_replace('/\D+/', '', $wa_raw);
+		$wa_url    = '';
+		if ($wa_digits !== '') {
+			$wa_msg = sprintf(
+				/* translators: 1: project title, 2: unit code, 3: permalink */
+				__('I am interested in unit %2$s at %1$s %3$s', 'awaid-projects'),
+				get_the_title(),
+				$code,
+				get_permalink()
+			);
+			$wa_url = 'https://wa.me/' . $wa_digits . '?text=' . rawurlencode($wa_msg);
+		}
+		$ph_raw = trim((string) ($u['phone'] ?? ''));
+		$tel_u  = $ph_raw !== '' ? 'tel:' . preg_replace('/[^\d+]/', '', $ph_raw) : '';
+
+		$units_modal_units[] = [
+			'code'          => $code,
+			'type'          => (string) ($u['type'] ?? ''),
+			'status'        => (string) ($u['status'] ?? 'available'),
+			'statusLabel'   => awaid_project_status_label((string) ($u['status'] ?? 'available')),
+			'price'         => (string) ($u['price'] ?? ''),
+			'area'          => (string) ($u['area'] ?? ''),
+			'bedrooms'      => (string) ($u['bedrooms'] ?? ''),
+			'bathrooms'     => (string) ($u['bathrooms'] ?? ''),
+			'floor'         => (string) ($u['floor'] ?? ''),
+			'kitchens'      => (string) ($u['kitchens'] ?? ''),
+			'description'   => (string) ($u['description'] ?? ''),
+			'gallery'       => $unit_gallery,
+			'highlights'    => $uhl,
+			'whatsappUrl'   => $wa_url,
+			'telUrl'        => $tel_u,
+		];
+	}
+	$units_modal_payload = [
+		'icons' => $spec_icons,
+		'labels' => [
+			'detailsTitle' => __('تفاصيل الوحدة', 'awaid-projects'),
+			'bathrooms'    => __('Bathrooms', 'awaid-projects'),
+			'bedrooms'     => __('Bedrooms', 'awaid-projects'),
+			'area'         => __('Area', 'awaid-projects'),
+			'kitchens'     => __('Kitchens', 'awaid-projects'),
+			'floor'        => __('الدور', 'awaid-projects'),
+			'features'     => __('المميزات', 'awaid-projects'),
+			'price'        => __('السعر', 'awaid-projects'),
+			'whatsapp'     => __('تواصل واتس اب', 'awaid-projects'),
+			'call'         => __('اتصال', 'awaid-projects'),
+			'close'        => __('Close', 'awaid-projects'),
+			'openDetails'  => __('View unit details', 'awaid-projects'),
+		],
+		'units' => $units_modal_units,
+	];
+	$units_modal_json = wp_json_encode(
+		$units_modal_payload,
+		JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE
+	);
+
 	$render_sidebar = static function (string $sidebar_mod) use ($d, $area_range, $price_range, $brochure_url, $map_url, $units, $spec_icons, $specs_panel_dir): void {
 		$base = 'awaid-sidebar-card ' . $sidebar_mod;
 ?>
@@ -317,13 +427,21 @@ while (have_posts()) :
 							<div class="awaid-main-card">
 								<!-- <section class="awaid-section awaid-section--inset" id="awaid-units"> -->
 								<!-- <h2 class="awaid-section__title"><?php esc_html_e('Units', 'awaid-projects'); ?></h2> -->
-								<div class="awaid-unit-filters" role="tablist" aria-label="<?php esc_attr_e('Filter units', 'awaid-projects'); ?>">
-									<button type="button" class="awaid-pill awaid-unit-filter is-active" data-filter="all" aria-pressed="true"><?php esc_html_e('All', 'awaid-projects'); ?></button>
-									<button type="button" class="awaid-pill awaid-unit-filter" data-filter="available" aria-pressed="false"><?php esc_html_e('Available', 'awaid-projects'); ?></button>
-									<button type="button" class="awaid-pill awaid-unit-filter" data-filter="reserved" aria-pressed="false"><?php esc_html_e('Reserved', 'awaid-projects'); ?></button>
-									<button type="button" class="awaid-pill awaid-unit-filter" data-filter="sold" aria-pressed="false"><?php esc_html_e('Sold', 'awaid-projects'); ?></button>
-								</div>
-								<div class="awaid-units-grid">
+								<ul class="awaid-unit-filters nav nav-tabs nav-pills tab-box w-fit" dir="rtl" role="tablist" aria-label="<?php esc_attr_e('Filter units', 'awaid-projects'); ?>">
+									<li class="nav-item">
+										<button type="button" class="nav-link awaid-unit-filter is-active" data-filter="all" aria-pressed="true"><i class="fa fa-bars" aria-hidden="true"></i> <?php esc_html_e('الكل', 'awaid-projects'); ?></button>
+									</li>
+									<li class="nav-item">
+										<button type="button" class="nav-link awaid-unit-filter" data-filter="available" aria-pressed="false"><i class="fa fa-unlock" aria-hidden="true"></i> <?php esc_html_e('متاح', 'awaid-projects'); ?></button>
+									</li>
+									<li class="nav-item">
+										<button type="button" class="nav-link awaid-unit-filter" data-filter="reserved" aria-pressed="false"><i class="fa fa-lock" aria-hidden="true"></i> <?php esc_html_e('محجوز', 'awaid-projects'); ?></button>
+									</li>
+									<li class="nav-item">
+										<button type="button" class="nav-link awaid-unit-filter" data-filter="sold" aria-pressed="false"><i class="fa fa-times" aria-hidden="true"></i> <?php esc_html_e('مباع', 'awaid-projects'); ?></button>
+									</li>
+								</ul>
+								<div class="awaid-units-grid row">
 									<?php foreach ($units as $unit) : ?>
 										<?php
 										$code   = isset($unit['code']) ? (string) $unit['code'] : '';
@@ -333,35 +451,95 @@ while (have_posts()) :
 										$status  = isset($unit['status']) ? (string) $unit['status'] : 'available';
 										$badge   = awaid_project_status_label($status);
 										$is_sold = $status === 'sold';
+										$u_type = isset($unit['type']) ? (string) $unit['type'] : '';
+										$u_price = isset($unit['price']) ? (string) $unit['price'] : '';
+										$u_area = isset($unit['area']) ? (string) $unit['area'] : '';
+										$u_bedrooms = isset($unit['bedrooms']) ? (string) $unit['bedrooms'] : '';
+										$u_bathrooms = isset($unit['bathrooms']) ? (string) $unit['bathrooms'] : '';
+										$u_gallery_ids = isset($unit['gallery_ids']) && is_array($unit['gallery_ids']) ? $unit['gallery_ids'] : [];
+										$u_thumb = '';
+										foreach ($u_gallery_ids as $u_gid) {
+											$u_gid = absint($u_gid);
+											if (!$u_gid || !wp_attachment_is_image($u_gid)) {
+												continue;
+											}
+											$u_thumb = wp_get_attachment_image_url($u_gid, 'large');
+											if ($u_thumb) {
+												break;
+											}
+										}
 										?>
-										<article class="awaid-unit-card<?php echo $is_sold ? ' awaid-unit-card--sold' : ''; ?>" data-status="<?php echo esc_attr($status); ?>">
-											<div class="awaid-unit-card__head">
-												<span class="awaid-unit-card__code"><?php echo esc_html($code); ?></span>
-												<?php if ($is_sold) : ?>
-													<span class="awaid-badge awaid-badge--sold"><?php echo esc_html($badge); ?></span>
+										<div class="awaid-unit-col col-md-6 col-lg-4 mb-2">
+											<article
+												class="post rounded border awaid-unit-card<?php echo $is_sold ? ' awaid-unit-card--sold' : ''; ?> awaid-unit-card--interactive"
+												data-status="<?php echo esc_attr($status); ?>"
+												data-awaid-unit-code="<?php echo esc_attr($code); ?>"
+												role="button"
+												tabindex="0"
+												aria-label="<?php echo esc_attr(sprintf(/* translators: %s: unit code */__('View details for unit %s', 'awaid-projects'), $code)); ?>">
+												<?php if ($u_thumb) : ?>
+													<figure class="rounded-top position-relative awaid-unit-card__media">
+														<img src="<?php echo esc_url($u_thumb); ?>" style="max-height: 207px;" alt="<?php echo esc_attr($code); ?>" loading="lazy" decoding="async">
+														<?php if ($is_sold) : ?>
+															<div class="awaid-unit-card__sold-overlay">
+																<span class="badge bg-danger"><?php esc_html_e('تم البيع', 'awaid-projects'); ?></span>
+															</div>
+														<?php endif; ?>
+													</figure>
 												<?php endif; ?>
-											</div>
-											<?php if (!empty($unit['type'])) : ?>
-												<p class="awaid-unit-card__type"><?php echo esc_html((string) $unit['type']); ?></p>
-											<?php endif; ?>
-											<ul class="awaid-unit-card__meta">
-												<?php if (!empty($unit['price'])) : ?>
-													<li><span class="awaid-meta-label"><?php esc_html_e('Price', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['price']); ?></li>
-												<?php endif; ?>
-												<?php if (!empty($unit['area'])) : ?>
-													<li><span class="awaid-meta-label"><?php esc_html_e('Area', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['area']); ?> m²</li>
-												<?php endif; ?>
-												<?php if (!empty($unit['bedrooms'])) : ?>
-													<li><span class="awaid-meta-label"><?php esc_html_e('Bedrooms', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['bedrooms']); ?></li>
-												<?php endif; ?>
-												<?php if (!empty($unit['bathrooms'])) : ?>
-													<li><span class="awaid-meta-label"><?php esc_html_e('Bathrooms', 'awaid-projects'); ?></span> <?php echo esc_html((string) $unit['bathrooms']); ?></li>
-												<?php endif; ?>
-												<?php if (!$is_sold) : ?>
-													<li><span class="awaid-meta-label"><?php esc_html_e('Status', 'awaid-projects'); ?></span> <?php echo esc_html($badge); ?></li>
-												<?php endif; ?>
-											</ul>
-										</article>
+												<div class="post-header project-data-card rounded-bottom bg-white awaid-unit-card__body">
+													<div class="d-flex align-content-start justify-content-between w-100 awaid-unit-card__top">
+														<h2 class="post-title h6 mt-0 mb-0 awaid-unit-card__title">
+															<strong class="unit_code"><?php echo esc_html($code); ?></strong>
+															<span class="badge bg-pale-ash text-dark rounded-pill"><?php esc_html_e('عرض بيانات الوحدة', 'awaid-projects'); ?></span>
+														</h2>
+														<?php if ($u_type !== '') : ?>
+															<div>
+																<span class="badge bg-pale-ash text-dark rounded-pill"><?php echo esc_html($u_type); ?></span>
+															</div>
+														<?php endif; ?>
+													</div>
+													<?php if ($is_sold) : ?>
+														<p class="awaid-price-range">
+															<?php esc_html_e('تواصل معنا', 'awaid-projects'); ?>
+														</p>
+													<?php elseif ($u_price !== '') : ?>
+														<p class="awaid-price-range">
+															<?php echo esc_html($u_price); ?>
+															<?php if (!empty($spec_icons['currency'])) : ?>
+																<img src="<?php echo esc_url($spec_icons['currency']); ?>" width="14" alt="">
+															<?php endif; ?>
+														</p>
+													<?php endif; ?>
+													<ul class="post-meta mb-0 awaid-unit-card__meta">
+														<?php if ($u_area !== '') : ?>
+															<li class="post-comments">
+																<?php if (!empty($spec_icons['area'])) : ?>
+																	<img src="<?php echo esc_url($spec_icons['area']); ?>" class="dark-image" style="width: 20px;" alt="<?php esc_attr_e('Area', 'awaid-projects'); ?>">
+																<?php endif; ?>
+																<span class="me-1 fs-15 text-gray-800"><?php echo esc_html($u_area); ?> م²</span>
+															</li>
+														<?php endif; ?>
+														<?php if ($u_bedrooms !== '') : ?>
+															<li class="post-author">
+																<?php if (!empty($spec_icons['bedrooms'])) : ?>
+																	<img src="<?php echo esc_url($spec_icons['bedrooms']); ?>" class="dark-image" style="width: 20px;" alt="<?php esc_attr_e('Bedrooms', 'awaid-projects'); ?>">
+																<?php endif; ?>
+																<span class="me-1 fs-15 text-gray-800"><?php echo esc_html($u_bedrooms); ?></span>
+															</li>
+														<?php endif; ?>
+														<?php if ($u_bathrooms !== '') : ?>
+															<li class="post-date">
+																<?php if (!empty($spec_icons['bathrooms'])) : ?>
+																	<img src="<?php echo esc_url($spec_icons['bathrooms']); ?>" class="dark-image" style="width: 20px;" alt="<?php esc_attr_e('Bathrooms', 'awaid-projects'); ?>">
+																<?php endif; ?>
+																<span class="me-1 fs-15 text-gray-800"><?php echo esc_html($u_bathrooms); ?></span>
+															</li>
+														<?php endif; ?>
+													</ul>
+												</div>
+											</article>
+										</div>
 									<?php endforeach; ?>
 								</div>
 								<!-- </section> -->
@@ -475,6 +653,21 @@ while (have_posts()) :
 						<button type="button" class="awaid-lightbox__arrow awaid-lightbox__arrow--next" data-awaid-lightbox-next aria-label="<?php esc_attr_e('Next image', 'awaid-projects'); ?>"></button>
 					<?php endif; ?>
 					<img class="awaid-lightbox__img" src="" alt="" data-awaid-lightbox-img decoding="async">
+				</div>
+			</div>
+		<?php endif; ?>
+		<?php if ($units_modal_units) : ?>
+			<script type="application/json" id="awaid-units-modal-data">
+				<?php echo $units_modal_json; ?>
+			</script>
+			<div id="awaid-unit-modal" class="awaid-unit-modal" hidden data-awaid-unit-modal>
+				<div class="awaid-unit-modal__backdrop" data-awaid-unit-modal-close tabindex="-1"></div>
+				<div class="awaid-unit-modal__panel" role="dialog" aria-modal="true" aria-labelledby="awaid-unit-modal-title">
+					<button type="button" class="awaid-unit-modal__close" data-awaid-unit-modal-close aria-label="<?php esc_attr_e('Close', 'awaid-projects'); ?>"><span aria-hidden="true">&times;</span></button>
+					<div class="awaid-unit-modal__toolbar">
+						<h2 id="awaid-unit-modal-title" class="awaid-unit-modal__toolbar-title"><?php esc_html_e('تفاصيل الوحدة', 'awaid-projects'); ?></h2>
+					</div>
+					<div class="awaid-unit-modal__body" id="awaid-unit-modal-body"></div>
 				</div>
 			</div>
 		<?php endif; ?>

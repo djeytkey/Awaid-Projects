@@ -29,8 +29,24 @@ if (!$warranties) {
 if (!$nearby) {
 	$nearby = [['name' => '', 'distance' => '']];
 }
+$awaid_unit_default = [
+	'code'         => '',
+	'type'         => '',
+	'price'        => '',
+	'area'         => '',
+	'bedrooms'     => '',
+	'bathrooms'    => '',
+	'status'       => 'available',
+	'gallery_ids'  => [],
+	'description'  => '',
+	'floor'        => '',
+	'kitchens'     => '',
+	'whatsapp'     => '',
+	'phone'        => '',
+	'highlights'   => [['icon' => '', 'title' => '', 'text' => '']],
+];
 if (!$units) {
-	$units = [['code' => '', 'type' => '', 'price' => '', 'area' => '', 'bedrooms' => '', 'bathrooms' => '', 'status' => 'available']];
+	$units = [$awaid_unit_default];
 }
 ?>
 <div class="awaid-admin-meta">
@@ -196,8 +212,8 @@ if (!$units) {
 
 	<div class="awaid-admin-section">
 		<h3><?php esc_html_e('Units / inventory', 'awaid-projects'); ?></h3>
-		<p class="description"><?php esc_html_e('Status drives front-end filters (available / reserved / sold).', 'awaid-projects'); ?></p>
-		<table class="widefat awaid-repeater awaid-units-table" id="awaid_units_table">
+		<p class="description"><?php esc_html_e('Status drives front-end filters. Use “Unit details” for gallery, description, highlights, and contacts shown in the side sheet on the single project page.', 'awaid-projects'); ?></p>
+		<table class="widefat awaid-units-table" id="awaid_units_table">
 			<thead>
 				<tr>
 					<th><?php esc_html_e('Code', 'awaid-projects'); ?></th>
@@ -210,29 +226,95 @@ if (!$units) {
 					<th class="awaid-col-actions"></th>
 				</tr>
 			</thead>
-			<tbody>
-				<?php foreach ($units as $i => $row) : ?>
-					<tr class="awaid-repeater-row">
-						<td><input type="text" name="awaid_project[units][<?php echo esc_attr((string) $i); ?>][code]" value="<?php echo esc_attr((string) ($row['code'] ?? '')); ?>"></td>
-						<td><input type="text" name="awaid_project[units][<?php echo esc_attr((string) $i); ?>][type]" value="<?php echo esc_attr((string) ($row['type'] ?? '')); ?>"></td>
-						<td><input type="text" name="awaid_project[units][<?php echo esc_attr((string) $i); ?>][price]" value="<?php echo esc_attr((string) ($row['price'] ?? '')); ?>"></td>
-						<td><input type="text" name="awaid_project[units][<?php echo esc_attr((string) $i); ?>][area]" value="<?php echo esc_attr((string) ($row['area'] ?? '')); ?>"></td>
-						<td><input type="text" name="awaid_project[units][<?php echo esc_attr((string) $i); ?>][bedrooms]" value="<?php echo esc_attr((string) ($row['bedrooms'] ?? '')); ?>"></td>
-						<td><input type="text" name="awaid_project[units][<?php echo esc_attr((string) $i); ?>][bathrooms]" value="<?php echo esc_attr((string) ($row['bathrooms'] ?? '')); ?>"></td>
+			<?php foreach ($units as $i => $row) : ?>
+				<?php
+				$row = array_merge($awaid_unit_default, is_array($row) ? $row : []);
+				$ug_ids = is_array($row['gallery_ids'] ?? null) ? array_map('absint', $row['gallery_ids']) : [];
+				$ug_ids = array_values(array_filter(array_unique($ug_ids)));
+				$ug_csv = implode(',', $ug_ids);
+				$highlights = isset($row['highlights']) && is_array($row['highlights']) && $row['highlights'] !== [] ? $row['highlights'] : [['icon' => '', 'title' => '', 'text' => '']];
+				$uid = (string) $i;
+				?>
+				<tbody class="awaid-unit-block">
+					<tr class="awaid-repeater-row awaid-unit-block__main">
+						<td><input type="text" name="awaid_project[units][<?php echo esc_attr($uid); ?>][code]" value="<?php echo esc_attr((string) ($row['code'] ?? '')); ?>"></td>
+						<td><input type="text" name="awaid_project[units][<?php echo esc_attr($uid); ?>][type]" value="<?php echo esc_attr((string) ($row['type'] ?? '')); ?>"></td>
+						<td><input type="text" name="awaid_project[units][<?php echo esc_attr($uid); ?>][price]" value="<?php echo esc_attr((string) ($row['price'] ?? '')); ?>"></td>
+						<td><input type="text" name="awaid_project[units][<?php echo esc_attr($uid); ?>][area]" value="<?php echo esc_attr((string) ($row['area'] ?? '')); ?>"></td>
+						<td><input type="text" name="awaid_project[units][<?php echo esc_attr($uid); ?>][bedrooms]" value="<?php echo esc_attr((string) ($row['bedrooms'] ?? '')); ?>"></td>
+						<td><input type="text" name="awaid_project[units][<?php echo esc_attr($uid); ?>][bathrooms]" value="<?php echo esc_attr((string) ($row['bathrooms'] ?? '')); ?>"></td>
 						<td>
-							<select name="awaid_project[units][<?php echo esc_attr((string) $i); ?>][status]">
+							<select name="awaid_project[units][<?php echo esc_attr($uid); ?>][status]">
 								<?php
 								$st = (string) ($row['status'] ?? 'available');
-								foreach (['available' => __('Available', 'awaid-projects'), 'reserved' => __('Reserved', 'awaid-projects'), 'sold' => __('Sold', 'awaid-projects')] as $val => $lab) {
+								foreach (['available' => __('متاح', 'awaid-projects'), 'reserved' => __('محجوز', 'awaid-projects'), 'sold' => __('مباع', 'awaid-projects')] as $val => $lab) {
 									printf('<option value="%s"%s>%s</option>', esc_attr($val), selected($st, $val, false), esc_html($lab));
 								}
 								?>
 							</select>
 						</td>
-						<td><button type="button" class="button awaid-remove-row"><?php esc_html_e('Remove', 'awaid-projects'); ?></button></td>
+						<td><button type="button" class="button awaid-unit-remove"><?php esc_html_e('Remove', 'awaid-projects'); ?></button></td>
 					</tr>
-				<?php endforeach; ?>
-			</tbody>
+					<tr class="awaid-unit-block__detail">
+						<td colspan="8" class="awaid-unit-block__detail-cell">
+							<p><strong><?php esc_html_e('Unit gallery (modal slider)', 'awaid-projects'); ?></strong></p>
+							<input type="hidden" class="awaid-unit-gallery-csv" name="awaid_project[units][<?php echo esc_attr($uid); ?>][gallery_csv]" value="<?php echo esc_attr($ug_csv); ?>">
+							<p>
+								<button type="button" class="button awaid-unit-gallery-add"><?php esc_html_e('Add images', 'awaid-projects'); ?></button>
+							</p>
+							<ul class="awaid-gallery-grid awaid-unit-gallery-list">
+								<?php foreach ($ug_ids as $gid) : ?>
+									<?php
+									if (!$gid || !wp_attachment_is_image($gid)) {
+										continue;
+									}
+									$turl = wp_get_attachment_image_url($gid, 'thumbnail') ?: wp_get_attachment_url($gid);
+									?>
+									<li class="awaid-gallery-item" data-id="<?php echo esc_attr((string) $gid); ?>">
+										<span class="awaid-gallery-thumb"><img src="<?php echo esc_url((string) $turl); ?>" alt="" loading="lazy" decoding="async"></span>
+										<button type="button" class="button button-small awaid-unit-gallery-remove" data-id="<?php echo esc_attr((string) $gid); ?>"><?php esc_html_e('Remove', 'awaid-projects'); ?></button>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+							<p><label><strong><?php esc_html_e('Description', 'awaid-projects'); ?></strong><br>
+								<textarea class="widefat" rows="3" name="awaid_project[units][<?php echo esc_attr($uid); ?>][description]"><?php echo esc_textarea((string) ($row['description'] ?? '')); ?></textarea></label></p>
+							<table class="form-table awaid-form-table">
+								<tr>
+									<th><?php esc_html_e('Floor', 'awaid-projects'); ?></th>
+									<td><input type="text" class="widefat" name="awaid_project[units][<?php echo esc_attr($uid); ?>][floor]" value="<?php echo esc_attr((string) ($row['floor'] ?? '')); ?>"></td>
+								</tr>
+								<tr>
+									<th><?php esc_html_e('Kitchens', 'awaid-projects'); ?></th>
+									<td><input type="text" class="widefat" name="awaid_project[units][<?php echo esc_attr($uid); ?>][kitchens]" value="<?php echo esc_attr((string) ($row['kitchens'] ?? '')); ?>"></td>
+								</tr>
+								<tr>
+									<th><?php esc_html_e('WhatsApp number', 'awaid-projects'); ?></th>
+									<td><input type="text" class="widefat" name="awaid_project[units][<?php echo esc_attr($uid); ?>][whatsapp]" value="<?php echo esc_attr((string) ($row['whatsapp'] ?? '')); ?>" placeholder="<?php esc_attr_e('e.g. 9665xxxxxxxx', 'awaid-projects'); ?>"></td>
+								</tr>
+								<tr>
+									<th><?php esc_html_e('Phone', 'awaid-projects'); ?></th>
+									<td><input type="text" class="widefat" name="awaid_project[units][<?php echo esc_attr($uid); ?>][phone]" value="<?php echo esc_attr((string) ($row['phone'] ?? '')); ?>"></td>
+								</tr>
+							</table>
+							<p><strong><?php esc_html_e('Highlights (icon URL + title + text)', 'awaid-projects'); ?></strong></p>
+							<table class="widefat awaid-repeater awaid-unit-highlights" data-unit-index="<?php echo esc_attr($uid); ?>">
+								<thead><tr><th><?php esc_html_e('Icon URL', 'awaid-projects'); ?></th><th><?php esc_html_e('Title', 'awaid-projects'); ?></th><th><?php esc_html_e('Text', 'awaid-projects'); ?></th><th class="awaid-col-actions"></th></tr></thead>
+								<tbody>
+									<?php foreach ($highlights as $j => $hrow) : ?>
+										<tr class="awaid-repeater-row">
+											<td><input type="url" class="widefat" name="awaid_project[units][<?php echo esc_attr($uid); ?>][highlights][<?php echo esc_attr((string) $j); ?>][icon]" value="<?php echo esc_attr((string) ($hrow['icon'] ?? '')); ?>" placeholder="https://"></td>
+											<td><input type="text" class="widefat" name="awaid_project[units][<?php echo esc_attr($uid); ?>][highlights][<?php echo esc_attr((string) $j); ?>][title]" value="<?php echo esc_attr((string) ($hrow['title'] ?? '')); ?>"></td>
+											<td><textarea class="widefat" rows="2" name="awaid_project[units][<?php echo esc_attr($uid); ?>][highlights][<?php echo esc_attr((string) $j); ?>][text]"><?php echo esc_textarea((string) ($hrow['text'] ?? '')); ?></textarea></td>
+											<td><button type="button" class="button awaid-remove-row"><?php esc_html_e('Remove', 'awaid-projects'); ?></button></td>
+										</tr>
+									<?php endforeach; ?>
+								</tbody>
+							</table>
+							<p><button type="button" class="button" data-awaid-add-unit-highlight><?php esc_html_e('Add highlight', 'awaid-projects'); ?></button></p>
+						</td>
+					</tr>
+				</tbody>
+			<?php endforeach; ?>
 		</table>
 		<p><button type="button" class="button" data-awaid-add-unit><?php esc_html_e('Add unit', 'awaid-projects'); ?></button></p>
 	</div>
@@ -258,21 +340,60 @@ if (!$units) {
 		<td><button type="button" class="button awaid-remove-row"><?php echo esc_html(__('Remove', 'awaid-projects')); ?></button></td>
 	</tr>
 </script>
-<script type="text/html" id="tmpl-awaid-unit-row">
+<script type="text/html" id="tmpl-awaid-unit-highlight-row">
 	<tr class="awaid-repeater-row">
-		<td><input type="text" name="awaid_project[units][__i__][code]" value=""></td>
-		<td><input type="text" name="awaid_project[units][__i__][type]" value=""></td>
-		<td><input type="text" name="awaid_project[units][__i__][price]" value=""></td>
-		<td><input type="text" name="awaid_project[units][__i__][area]" value=""></td>
-		<td><input type="text" name="awaid_project[units][__i__][bedrooms]" value=""></td>
-		<td><input type="text" name="awaid_project[units][__i__][bathrooms]" value=""></td>
-		<td>
-			<select name="awaid_project[units][__i__][status]">
-				<option value="available"><?php echo esc_html(__('Available', 'awaid-projects')); ?></option>
-				<option value="reserved"><?php echo esc_html(__('Reserved', 'awaid-projects')); ?></option>
-				<option value="sold"><?php echo esc_html(__('Sold', 'awaid-projects')); ?></option>
-			</select>
-		</td>
+		<td><input type="url" class="widefat" name="awaid_project[units][__i__][highlights][__j__][icon]" value="" placeholder="https://"></td>
+		<td><input type="text" class="widefat" name="awaid_project[units][__i__][highlights][__j__][title]" value=""></td>
+		<td><textarea class="widefat" rows="2" name="awaid_project[units][__i__][highlights][__j__][text]"></textarea></td>
 		<td><button type="button" class="button awaid-remove-row"><?php echo esc_html(__('Remove', 'awaid-projects')); ?></button></td>
 	</tr>
+</script>
+<script type="text/html" id="tmpl-awaid-unit-block">
+	<tbody class="awaid-unit-block">
+		<tr class="awaid-repeater-row awaid-unit-block__main">
+			<td><input type="text" name="awaid_project[units][__i__][code]" value=""></td>
+			<td><input type="text" name="awaid_project[units][__i__][type]" value=""></td>
+			<td><input type="text" name="awaid_project[units][__i__][price]" value=""></td>
+			<td><input type="text" name="awaid_project[units][__i__][area]" value=""></td>
+			<td><input type="text" name="awaid_project[units][__i__][bedrooms]" value=""></td>
+			<td><input type="text" name="awaid_project[units][__i__][bathrooms]" value=""></td>
+			<td>
+				<select name="awaid_project[units][__i__][status]">
+					<option value="available"><?php echo esc_html(__('متاح', 'awaid-projects')); ?></option>
+					<option value="reserved"><?php echo esc_html(__('محجوز', 'awaid-projects')); ?></option>
+					<option value="sold"><?php echo esc_html(__('مباع', 'awaid-projects')); ?></option>
+				</select>
+			</td>
+			<td><button type="button" class="button awaid-unit-remove"><?php echo esc_html(__('Remove', 'awaid-projects')); ?></button></td>
+		</tr>
+		<tr class="awaid-unit-block__detail">
+			<td colspan="8" class="awaid-unit-block__detail-cell">
+				<p><strong><?php echo esc_html(__('Unit gallery (modal slider)', 'awaid-projects')); ?></strong></p>
+				<input type="hidden" class="awaid-unit-gallery-csv" name="awaid_project[units][__i__][gallery_csv]" value="">
+				<p><button type="button" class="button awaid-unit-gallery-add"><?php echo esc_html(__('Add images', 'awaid-projects')); ?></button></p>
+				<ul class="awaid-gallery-grid awaid-unit-gallery-list"></ul>
+				<p><label><strong><?php echo esc_html(__('Description', 'awaid-projects')); ?></strong><br>
+					<textarea class="widefat" rows="3" name="awaid_project[units][__i__][description]"></textarea></label></p>
+				<table class="form-table awaid-form-table">
+					<tr><th><?php echo esc_html(__('Floor', 'awaid-projects')); ?></th><td><input type="text" class="widefat" name="awaid_project[units][__i__][floor]" value=""></td></tr>
+					<tr><th><?php echo esc_html(__('Kitchens', 'awaid-projects')); ?></th><td><input type="text" class="widefat" name="awaid_project[units][__i__][kitchens]" value=""></td></tr>
+					<tr><th><?php echo esc_html(__('WhatsApp number', 'awaid-projects')); ?></th><td><input type="text" class="widefat" name="awaid_project[units][__i__][whatsapp]" value="" placeholder="<?php echo esc_attr(__('e.g. 9665xxxxxxxx', 'awaid-projects')); ?>"></td></tr>
+					<tr><th><?php echo esc_html(__('Phone', 'awaid-projects')); ?></th><td><input type="text" class="widefat" name="awaid_project[units][__i__][phone]" value=""></td></tr>
+				</table>
+				<p><strong><?php echo esc_html(__('Highlights (icon URL + title + text)', 'awaid-projects')); ?></strong></p>
+				<table class="widefat awaid-repeater awaid-unit-highlights" data-unit-index="__i__">
+					<thead><tr><th><?php echo esc_html(__('Icon URL', 'awaid-projects')); ?></th><th><?php echo esc_html(__('Title', 'awaid-projects')); ?></th><th><?php echo esc_html(__('Text', 'awaid-projects')); ?></th><th class="awaid-col-actions"></th></tr></thead>
+					<tbody>
+						<tr class="awaid-repeater-row">
+							<td><input type="url" class="widefat" name="awaid_project[units][__i__][highlights][0][icon]" value="" placeholder="https://"></td>
+							<td><input type="text" class="widefat" name="awaid_project[units][__i__][highlights][0][title]" value=""></td>
+							<td><textarea class="widefat" rows="2" name="awaid_project[units][__i__][highlights][0][text]"></textarea></td>
+							<td><button type="button" class="button awaid-remove-row"><?php echo esc_html(__('Remove', 'awaid-projects')); ?></button></td>
+						</tr>
+					</tbody>
+				</table>
+				<p><button type="button" class="button" data-awaid-add-unit-highlight><?php echo esc_html(__('Add highlight', 'awaid-projects')); ?></button></p>
+			</td>
+		</tr>
+	</tbody>
 </script>

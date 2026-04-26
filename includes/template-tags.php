@@ -9,9 +9,9 @@ if (!defined('ABSPATH')) {
  */
 function awaid_project_status_label(string $status): string {
 	$labels = [
-		'available' => __('Available', 'awaid-projects'),
-		'reserved'  => __('Reserved', 'awaid-projects'),
-		'sold'      => __('Sold', 'awaid-projects'),
+		'available' => __('متاح', 'awaid-projects'),
+		'reserved'  => __('محجوز', 'awaid-projects'),
+		'sold'      => __('مباع', 'awaid-projects'),
 	];
 	return $labels[ $status ] ?? $status;
 }
