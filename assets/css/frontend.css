@@ -728,6 +728,31 @@ body.single-awaid_project .awaid-section__title {
 	color: var(--awaid-muted);
 }
 
+.awaid-location-map {
+	height: 400px;
+	border-radius: 8px;
+	overflow: hidden;
+	position: relative;
+	margin-top: 1rem;
+}
+
+.awaid-location-map .leaflet-control-attribution {
+	font-size: 11px;
+}
+
+.awaid-location-map__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.awaid-location-map__btn {
+	padding: 10px 14px;
+	border-radius: 8px;
+	font-size: 0.85rem;
+}
+
 .awaid-nearby__title {
 	margin: 0 0 12px;
 	font-size: 1.05rem;

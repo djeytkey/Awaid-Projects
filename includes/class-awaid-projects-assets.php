@@ -73,6 +73,12 @@ class Awaid_Projects_Assets {
 			[],
 			'11.1.15'
 		);
+		wp_register_style(
+			'leaflet',
+			'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css',
+			[],
+			'1.9.4'
+		);
 		wp_register_script(
 			'swiper',
 			'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
@@ -80,19 +86,27 @@ class Awaid_Projects_Assets {
 			'11.1.15',
 			true
 		);
+		wp_register_script(
+			'leaflet',
+			'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js',
+			[],
+			'1.9.4',
+			true
+		);
 
 		wp_enqueue_style('swiper');
+		wp_enqueue_style('leaflet');
 		wp_enqueue_style(
 			'awaid-projects-frontend',
 			AWAID_PROJECTS_URL . 'assets/css/frontend.css',
-			array_merge(['swiper'], $style_deps),
+			array_merge(['swiper', 'leaflet'], $style_deps),
 			AWAID_PROJECTS_VERSION
 		);
 
 		wp_enqueue_script(
 			'awaid-projects-frontend',
 			AWAID_PROJECTS_URL . 'assets/js/frontend.js',
-			['swiper'],
+			['swiper', 'leaflet'],
 			AWAID_PROJECTS_VERSION,
 			true
 		);

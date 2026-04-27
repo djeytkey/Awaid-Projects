@@ -50,6 +50,30 @@ while (have_posts()) :
 	$brochure_id  = (int) ($d['brochure_id'] ?? 0);
 	$brochure_url = $brochure_id ? wp_get_attachment_url($brochure_id) : '';
 	$map_url      = isset($d['map_url']) ? (string) $d['map_url'] : '';
+	$map_lat      = null;
+	$map_lng      = null;
+	if ($map_url !== '') {
+		$q_raw = wp_parse_url($map_url, PHP_URL_QUERY);
+		if (is_string($q_raw) && $q_raw !== '') {
+			$map_query = [];
+			parse_str($q_raw, $map_query);
+			$map_parts = [];
+			if (!empty($map_query['q']) && is_string($map_query['q'])) {
+				$map_parts = array_map('trim', explode(',', (string) $map_query['q']));
+			}
+			if (count($map_parts) < 2 && !empty($map_query['destination']) && is_string($map_query['destination'])) {
+				$map_parts = array_map('trim', explode(',', (string) $map_query['destination']));
+			}
+			if (count($map_parts) >= 2) {
+				$lat_try = is_numeric($map_parts[0]) ? (float) $map_parts[0] : null;
+				$lng_try = is_numeric($map_parts[1]) ? (float) $map_parts[1] : null;
+				if ($lat_try !== null && $lng_try !== null) {
+					$map_lat = $lat_try;
+					$map_lng = $lng_try;
+				}
+			}
+		}
+	}
 
 	$features   = is_array($d['features'] ?? null) ? $d['features'] : [];
 	$warranties = is_array($d['warranties'] ?? null) ? $d['warranties'] : [];
@@ -552,7 +576,7 @@ while (have_posts()) :
 								<div class="awaid-split-inner-row<?php echo $features && $warranties ? ' awaid-split-inner-row--twocol' : ''; ?>">
 									<?php if ($features) : ?>
 										<div class="awaid-split-inner-col awaid-split-inner-col--features">
-											<h2 class="awaid-section__title"><?php esc_html_e('Features', 'awaid-projects'); ?></h2>
+											<h2 class="awaid-section__title"><?php esc_html_e('المميزات', 'awaid-projects'); ?></h2>
 											<div class="awaid-features-grid">
 												<?php foreach ($features as $f) : ?>
 													<?php
@@ -571,7 +595,7 @@ while (have_posts()) :
 									<?php endif; ?>
 									<?php if ($warranties) : ?>
 										<div class="awaid-split-inner-col awaid-split-inner-col--warranties">
-											<h2 class="awaid-section__title"><?php esc_html_e('Warranties', 'awaid-projects'); ?></h2>
+											<h2 class="awaid-section__title"><?php esc_html_e('الضمانات', 'awaid-projects'); ?></h2>
 											<div class="awaid-warranty-grid">
 												<?php foreach ($warranties as $w) : ?>
 													<?php
@@ -602,11 +626,23 @@ while (have_posts()) :
 							<!-- <section class="awaid-section awaid-section--inset awaid-section--location"> -->
 							<div class="awaid-location awaid-location--stack">
 								<div>
-									<h2 class="awaid-section__title"><?php esc_html_e('Project location', 'awaid-projects'); ?></h2>
+									<h2 class="awaid-section__title"><?php esc_html_e('موقع المشروع', 'awaid-projects'); ?></h2>
 									<?php if (!empty($d['location'])) : ?>
 										<p class="awaid-location__address"><?php echo esc_html((string) $d['location']); ?></p>
 									<?php endif; ?>
-									<?php if ($map_url) : ?>
+									<?php if ($map_lat !== null && $map_lng !== null) : ?>
+										<div
+											id="awaid-project-map"
+											class="awaid-location-map"
+											data-lat="<?php echo esc_attr((string) $map_lat); ?>"
+											data-lng="<?php echo esc_attr((string) $map_lng); ?>"
+											data-title="<?php echo esc_attr(get_the_title()); ?>"
+											data-location="<?php echo esc_attr((string) ($d['location'] ?? '')); ?>"></div>
+										<div class="awaid-location-map__actions">
+											<a class="awaid-btn awaid-btn--primary awaid-location-map__btn" href="<?php echo esc_url('https://www.google.com/maps?q=' . rawurlencode($map_lat . ',' . $map_lng)); ?>" target="_blank" rel="noopener"><?php esc_html_e('فتح في خرائط Google', 'awaid-projects'); ?></a>
+											<a class="awaid-btn awaid-btn--primary awaid-location-map__btn" href="<?php echo esc_url('https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode($map_lat . ',' . $map_lng)); ?>" target="_blank" rel="noopener"><?php esc_html_e('الاتجاهات', 'awaid-projects'); ?></a>
+										</div>
+									<?php elseif ($map_url) : ?>
 										<a class="awaid-btn awaid-btn--primary" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('Directions', 'awaid-projects'); ?></a>
 									<?php endif; ?>
 								</div>

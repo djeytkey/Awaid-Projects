@@ -217,6 +217,55 @@
 		});
 	}
 
+	function initProjectMap(root) {
+		var mapEl = root.querySelector('#awaid-project-map');
+		if (!mapEl || typeof window.L === 'undefined') {
+			return;
+		}
+		if (mapEl.getAttribute('data-awaid-map-bound') === '1') {
+			return;
+		}
+		var lat = parseFloat(mapEl.getAttribute('data-lat') || '');
+		var lng = parseFloat(mapEl.getAttribute('data-lng') || '');
+		if (!isFinite(lat) || !isFinite(lng)) {
+			return;
+		}
+		mapEl.setAttribute('data-awaid-map-bound', '1');
+
+		var projectTitle = mapEl.getAttribute('data-title') || '';
+		var projectLocation = mapEl.getAttribute('data-location') || '';
+		var map = window.L.map(mapEl, {
+			scrollWheelZoom: false
+		}).setView([lat, lng], 15);
+
+		window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; OpenStreetMap contributors'
+		}).addTo(map);
+
+		window.L.circle([lat, lng], {
+			radius: 500,
+			color: '#007bff',
+			weight: 3,
+			fillColor: '#007bff',
+			fillOpacity: 0.1
+		}).addTo(map);
+
+		var marker = window.L.marker([lat, lng]).addTo(map);
+		var popupHtml =
+			'<div class="text-center" dir="rtl">' +
+			'<h5 class="mb-2">' + awaidEsc(projectTitle) + '</h5>' +
+			(projectLocation ? '<span class="mb-2">' + awaidEsc(projectLocation) + '</span>' : '') +
+			'</div>';
+		marker.bindPopup(popupHtml).openPopup();
+
+		window.setTimeout(function () {
+			map.invalidateSize();
+		}, 150);
+		window.addEventListener('resize', function () {
+			map.invalidateSize();
+		});
+	}
+
 	/**
 	 * Desktop sidebar: pin with position:fixed while scrolling (CSS sticky often fails when
 	 * any ancestor has overflow:hidden, e.g. Rehomes .site-content-contain).
@@ -683,6 +732,7 @@
 			initFilters(root);
 			initProjectSwiper(root);
 			initLightbox(root);
+			initProjectMap(root);
 			initUnitModal(root);
 			initDesktopSidebarSticky(root);
 		}
