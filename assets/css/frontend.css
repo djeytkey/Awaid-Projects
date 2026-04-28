@@ -663,7 +663,7 @@ body.single-awaid_project .awaid-section__title {
 
 .awaid-features-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 14px;
 }
 
@@ -699,7 +699,7 @@ body.single-awaid_project .awaid-section__title {
 
 .awaid-warranty-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 14px;
 }
 
@@ -778,6 +778,7 @@ body.single-awaid_project .awaid-section__title {
 	margin: 0;
 	padding: 0;
 	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 10px;
 }
 
@@ -802,6 +803,14 @@ body.single-awaid_project .awaid-section__title {
 	color: var(--awaid-muted);
 	font-weight: 600;
 	white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+	.awaid-features-grid,
+	.awaid-warranty-grid,
+	.awaid-nearby__list {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
 }
 
 .awaid-lucide-icon {
