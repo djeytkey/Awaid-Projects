@@ -242,6 +242,7 @@ if (!$units) {
 					<?php
 					$nearby_id = isset($nearby['id']) ? (string) $nearby['id'] : '';
 					$nearby_title = isset($nearby['title']) ? (string) $nearby['title'] : '';
+					$nearby_distance = isset($nearby['distance']) ? (string) $nearby['distance'] : '';
 					$nearby_icon = isset($nearby['icon']) ? (string) $nearby['icon'] : '';
 					if ($nearby_id === '' || $nearby_title === '') {
 						continue;
@@ -254,6 +255,9 @@ if (!$units) {
 								<i data-lucide="<?php echo esc_attr($nearby_icon); ?>" class="awaid-lucide-icon" aria-hidden="true"></i>
 							<?php endif; ?>
 							<span><?php echo esc_html($nearby_title); ?></span>
+							<?php if ($nearby_distance !== '') : ?>
+								<small class="awaid-catalog-option__meta"><?php echo esc_html($nearby_distance); ?></small>
+							<?php endif; ?>
 						</span>
 					</label>
 				<?php endforeach; ?>

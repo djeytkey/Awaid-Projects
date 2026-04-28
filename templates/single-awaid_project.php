@@ -662,6 +662,7 @@ while (have_posts()) :
 											<?php foreach ($nearby as $n) : ?>
 												<?php
 												$nm = isset($n['title']) ? trim((string) $n['title']) : '';
+												$ds = isset($n['distance']) ? trim((string) $n['distance']) : '';
 												$icon = isset($n['icon']) ? trim((string) $n['icon']) : '';
 												if ($nm === '') {
 													continue;
@@ -672,6 +673,9 @@ while (have_posts()) :
 														<i data-lucide="<?php echo esc_attr($icon); ?>" class="awaid-nearby__icon awaid-lucide-icon" aria-hidden="true"></i>
 													<?php endif; ?>
 													<strong><?php echo esc_html($nm); ?></strong>
+													<?php if ($ds !== '') : ?>
+														<span class="awaid-nearby__dist"><?php echo esc_html($ds); ?></span>
+													<?php endif; ?>
 												</li>
 											<?php endforeach; ?>
 										</ul>

@@ -102,6 +102,8 @@ class Awaid_Projects_Settings
 				];
 				if ($type === 'warranties') {
 					$item['period'] = isset($row['period']) ? sanitize_text_field((string) $row['period']) : '';
+				} elseif ($type === 'nearby') {
+					$item['distance'] = isset($row['distance']) ? sanitize_text_field((string) $row['distance']) : '';
 				}
 				$out[$type][] = $item;
 			}
@@ -365,7 +367,7 @@ class Awaid_Projects_Settings
 
 				<?php self::render_table('features', __('المميزات', 'awaid-projects'), __('الأيقونة', 'awaid-projects'), __('المدة', 'awaid-projects'), $catalog['features'], $lucide_icons); ?>
 				<?php self::render_table('warranties', __('الضمانات', 'awaid-projects'), __('الأيقونة', 'awaid-projects'), __('المدة', 'awaid-projects'), $catalog['warranties'], $lucide_icons); ?>
-				<?php self::render_table('nearby', __('المعالم القريبة', 'awaid-projects'), __('الأيقونة', 'awaid-projects'), __('المدة', 'awaid-projects'), $catalog['nearby'], $lucide_icons); ?>
+				<?php self::render_table('nearby', __('المعالم القريبة', 'awaid-projects'), __('الأيقونة', 'awaid-projects'), __('المسافة', 'awaid-projects'), $catalog['nearby'], $lucide_icons); ?>
 
 				<?php submit_button(__('حفظ الإعدادات', 'awaid-projects')); ?>
 			</form>
@@ -385,7 +387,7 @@ class Awaid_Projects_Settings
 					<?php self::render_template_row('warranties', ['id' => '', 'title' => '', 'period' => '', 'icon' => '']); ?>
 				</script>
 		<script type="text/html" id="tmpl-awaid-settings-row-nearby">
-					<?php self::render_template_row('nearby', ['id' => '', 'title' => '', 'icon' => '']); ?>
+					<?php self::render_template_row('nearby', ['id' => '', 'title' => '', 'distance' => '', 'icon' => '']); ?>
 				</script>
 
 		<div class="awaid-icon-modal" id="awaid-icon-modal" hidden>
@@ -411,7 +413,7 @@ class Awaid_Projects_Settings
 	private static function render_table(string $type, string $title, string $col2, string $col3, array $rows, array $icons): void
 	{
 		if (!$rows) {
-			$rows = [['id' => '', 'title' => '', 'icon' => '', 'period' => '']];
+			$rows = [['id' => '', 'title' => '', 'icon' => '', 'period' => '', 'distance' => '']];
 		}
 		?>
 		<div class="awaid-admin-section">
@@ -423,6 +425,9 @@ class Awaid_Projects_Settings
 						<?php if ($type === 'warranties'): ?>
 							<th><?php echo esc_html($col3); ?></th>
 							<th><?php esc_html_e('الأيقونة', 'awaid-projects'); ?></th>
+						<?php elseif ($type === 'nearby'): ?>
+							<th><?php echo esc_html($col3); ?></th>
+							<th><?php echo esc_html($col2); ?></th>
 						<?php else: ?>
 							<th><?php echo esc_html($col2); ?></th>
 						<?php endif; ?>
@@ -460,7 +465,7 @@ class Awaid_Projects_Settings
 	private static function render_row(string $type, string $index, array $row, array $icons): void
 	{
 		$row = array_merge(
-			['id' => '', 'title' => '', 'icon' => '', 'period' => ''],
+			['id' => '', 'title' => '', 'icon' => '', 'period' => '', 'distance' => ''],
 			$row
 		);
 		$id = sanitize_key((string) $row['id']);
@@ -480,6 +485,12 @@ class Awaid_Projects_Settings
 					<input type="text" class="widefat"
 						name="awaid_projects_catalog[<?php echo esc_attr($type); ?>][<?php echo esc_attr($index); ?>][period]"
 						value="<?php echo esc_attr((string) ($row['period'] ?? '')); ?>">
+				</td>
+			<?php elseif ($type === 'nearby'): ?>
+				<td>
+					<input type="text" class="widefat"
+						name="awaid_projects_catalog[<?php echo esc_attr($type); ?>][<?php echo esc_attr($index); ?>][distance]"
+						value="<?php echo esc_attr((string) ($row['distance'] ?? '')); ?>" placeholder="<?php esc_attr_e('مثال 1.2 كم', 'awaid-projects'); ?>">
 				</td>
 			<?php endif; ?>
 			<td>
@@ -507,7 +518,7 @@ class Awaid_Projects_Settings
 	 */
 	private static function render_template_row(string $type, array $row): void
 	{
-		$row = array_merge(['id' => '', 'title' => '', 'icon' => '', 'period' => ''], $row);
+		$row = array_merge(['id' => '', 'title' => '', 'icon' => '', 'period' => '', 'distance' => ''], $row);
 		?>
 		<tr class="awaid-repeater-row">
 			<td>
@@ -519,6 +530,9 @@ class Awaid_Projects_Settings
 			<?php if ($type === 'warranties'): ?>
 				<td><input type="text" class="widefat" name="awaid_projects_catalog[<?php echo esc_attr($type); ?>][__i__][period]"
 						value="<?php echo esc_attr((string) ($row['period'] ?? '')); ?>"></td>
+			<?php elseif ($type === 'nearby'): ?>
+				<td><input type="text" class="widefat" name="awaid_projects_catalog[<?php echo esc_attr($type); ?>][__i__][distance]"
+						value="<?php echo esc_attr((string) ($row['distance'] ?? '')); ?>" placeholder="<?php esc_attr_e('مثال 1.2 كم', 'awaid-projects'); ?>"></td>
 			<?php endif; ?>
 			<td>
 				<div class="awaid-icon-input-wrap">

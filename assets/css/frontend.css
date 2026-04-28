@@ -797,6 +797,13 @@ body.single-awaid_project .awaid-section__title {
 	color: var(--awaid-accent);
 }
 
+.awaid-nearby__dist {
+	margin-inline-start: auto;
+	color: var(--awaid-muted);
+	font-weight: 600;
+	white-space: nowrap;
+}
+
 .awaid-lucide-icon {
 	stroke-width: 1.9;
 }
