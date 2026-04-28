@@ -75,9 +75,9 @@ while (have_posts()) :
 		}
 	}
 
-	$features   = is_array($d['features'] ?? null) ? $d['features'] : [];
-	$warranties = is_array($d['warranties'] ?? null) ? $d['warranties'] : [];
-	$nearby     = is_array($d['nearby'] ?? null) ? $d['nearby'] : [];
+	$features   = Awaid_Projects_Settings::resolve_selected_items('features', $d['features'] ?? []);
+	$warranties = Awaid_Projects_Settings::resolve_selected_items('warranties', $d['warranties'] ?? []);
+	$nearby     = Awaid_Projects_Settings::resolve_selected_items('nearby', $d['nearby'] ?? []);
 	$units      = is_array($d['units'] ?? null) ? $d['units'] : [];
 
 	$area_range  = awaid_project_area_range_display($d);
@@ -581,12 +581,17 @@ while (have_posts()) :
 												<?php foreach ($features as $f) : ?>
 													<?php
 													$t = isset($f['title']) ? trim((string) $f['title']) : '';
+													$icon = isset($f['icon']) ? trim((string) $f['icon']) : '';
 													if ($t === '') {
 														continue;
 													}
 													?>
 													<div class="awaid-feature-tile">
-														<span class="awaid-feature-tile__dot" aria-hidden="true"></span>
+														<?php if ($icon !== '') : ?>
+															<i data-lucide="<?php echo esc_attr($icon); ?>" class="awaid-feature-tile__icon awaid-lucide-icon" aria-hidden="true"></i>
+														<?php else : ?>
+															<span class="awaid-feature-tile__dot" aria-hidden="true"></span>
+														<?php endif; ?>
 														<span class="awaid-feature-tile__text"><?php echo esc_html($t); ?></span>
 													</div>
 												<?php endforeach; ?>
@@ -601,11 +606,15 @@ while (have_posts()) :
 													<?php
 													$t = isset($w['title']) ? trim((string) $w['title']) : '';
 													$p = isset($w['period']) ? trim((string) $w['period']) : '';
+													$icon = isset($w['icon']) ? trim((string) $w['icon']) : '';
 													if ($t === '' && $p === '') {
 														continue;
 													}
 													?>
 													<div class="awaid-warranty-card">
+														<?php if ($icon !== '') : ?>
+															<i data-lucide="<?php echo esc_attr($icon); ?>" class="awaid-warranty-card__icon awaid-lucide-icon" aria-hidden="true"></i>
+														<?php endif; ?>
 														<?php if ($t !== '') : ?>
 															<h3 class="awaid-warranty-card__title"><?php echo esc_html($t); ?></h3>
 														<?php endif; ?>
@@ -648,21 +657,21 @@ while (have_posts()) :
 								</div>
 								<?php if ($nearby) : ?>
 									<div class="awaid-nearby">
-										<h3 class="awaid-nearby__title"><?php esc_html_e('Nearby', 'awaid-projects'); ?></h3>
+										<h3 class="awaid-nearby__title"><?php esc_html_e('المعالم القريبة', 'awaid-projects'); ?></h3>
 										<ul class="awaid-nearby__list">
 											<?php foreach ($nearby as $n) : ?>
 												<?php
-												$nm = isset($n['name']) ? trim((string) $n['name']) : '';
-												$ds = isset($n['distance']) ? trim((string) $n['distance']) : '';
-												if ($nm === '' && $ds === '') {
+												$nm = isset($n['title']) ? trim((string) $n['title']) : '';
+												$icon = isset($n['icon']) ? trim((string) $n['icon']) : '';
+												if ($nm === '') {
 													continue;
 												}
 												?>
 												<li>
-													<strong><?php echo esc_html($nm); ?></strong>
-													<?php if ($ds !== '') : ?>
-														<span class="awaid-nearby__dist"><?php echo esc_html($ds); ?></span>
+													<?php if ($icon !== '') : ?>
+														<i data-lucide="<?php echo esc_attr($icon); ?>" class="awaid-nearby__icon awaid-lucide-icon" aria-hidden="true"></i>
 													<?php endif; ?>
+													<strong><?php echo esc_html($nm); ?></strong>
 												</li>
 											<?php endforeach; ?>
 										</ul>

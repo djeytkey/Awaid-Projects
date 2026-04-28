@@ -12,23 +12,17 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-$features   = is_array($d['features'] ?? null) ? $d['features'] : [];
-$warranties = is_array($d['warranties'] ?? null) ? $d['warranties'] : [];
-$nearby     = is_array($d['nearby'] ?? null) ? $d['nearby'] : [];
+$catalog_features = isset($catalog['features']) && is_array($catalog['features']) ? $catalog['features'] : [];
+$catalog_warranties = isset($catalog['warranties']) && is_array($catalog['warranties']) ? $catalog['warranties'] : [];
+$catalog_nearby = isset($catalog['nearby']) && is_array($catalog['nearby']) ? $catalog['nearby'] : [];
+$selected_feature_ids = is_array($selected_feature_ids ?? null) ? $selected_feature_ids : [];
+$selected_warranty_ids = is_array($selected_warranty_ids ?? null) ? $selected_warranty_ids : [];
+$selected_nearby_ids = is_array($selected_nearby_ids ?? null) ? $selected_nearby_ids : [];
 $units      = is_array($d['units'] ?? null) ? $d['units'] : [];
 $gallery_ids = is_array($d['gallery_ids'] ?? null) ? array_map('absint', $d['gallery_ids']) : [];
 $gallery_ids = array_values(array_filter(array_unique($gallery_ids)));
 $gallery_csv = implode(',', $gallery_ids);
 
-if (!$features) {
-	$features = [['title' => '']];
-}
-if (!$warranties) {
-	$warranties = [['title' => '', 'period' => '']];
-}
-if (!$nearby) {
-	$nearby = [['name' => '', 'distance' => '']];
-}
 $awaid_unit_default = [
 	'code'         => '',
 	'type'         => '',
@@ -161,53 +155,120 @@ if (!$units) {
 
 	<div class="awaid-admin-section">
 		<h3><?php esc_html_e('المميزات', 'awaid-projects'); ?></h3>
-		<!-- <p class="description"><?php esc_html_e('Short highlight items (tiles on the front).', 'awaid-projects'); ?></p> -->
-		<table class="widefat awaid-repeater" id="awaid_features_table">
-			<thead><tr><th><?php esc_html_e('المسمى', 'awaid-projects'); ?></th><th class="awaid-col-actions"></th></tr></thead>
-			<tbody>
-				<?php foreach ($features as $i => $row) : ?>
-					<tr class="awaid-repeater-row">
-						<td><input type="text" class="widefat" name="awaid_project[features][<?php echo esc_attr((string) $i); ?>][title]" value="<?php echo esc_attr((string) ($row['title'] ?? '')); ?>"></td>
-						<td><button type="button" class="button awaid-remove-row"><?php esc_html_e('حذف', 'awaid-projects'); ?></button></td>
-					</tr>
+		<?php if ($catalog_features) : ?>
+			<input type="search" class="widefat awaid-catalog-search" data-target="#awaid-feature-options" placeholder="<?php esc_attr_e('ابحث عن ميزة', 'awaid-projects'); ?>">
+			<div class="awaid-catalog-options" id="awaid-feature-options">
+				<?php foreach ($catalog_features as $feature) : ?>
+					<?php
+					$feature_id = isset($feature['id']) ? (string) $feature['id'] : '';
+					$feature_title = isset($feature['title']) ? (string) $feature['title'] : '';
+					$feature_icon = isset($feature['icon']) ? (string) $feature['icon'] : '';
+					if ($feature_id === '' || $feature_title === '') {
+						continue;
+					}
+					?>
+					<label class="awaid-catalog-option">
+						<input type="checkbox" name="awaid_project[feature_ids][]" value="<?php echo esc_attr($feature_id); ?>" <?php checked(in_array($feature_id, $selected_feature_ids, true)); ?>>
+						<span class="awaid-catalog-option__body">
+							<?php if ($feature_icon !== '') : ?>
+								<i data-lucide="<?php echo esc_attr($feature_icon); ?>" class="awaid-lucide-icon" aria-hidden="true"></i>
+							<?php endif; ?>
+							<span><?php echo esc_html($feature_title); ?></span>
+						</span>
+					</label>
 				<?php endforeach; ?>
-			</tbody>
-		</table>
-		<p><button type="button" class="button" data-awaid-add-feature><?php esc_html_e('إضافة ميزة', 'awaid-projects'); ?></button></p>
+			</div>
+		<?php else : ?>
+			<p class="description">
+				<?php
+				printf(
+					/* translators: %s: settings url */
+					wp_kses_post(__('No features yet. Add them first in <a href="%s">Catalog Settings</a>.', 'awaid-projects')),
+					esc_url(admin_url('edit.php?post_type=awaid_project&page=' . Awaid_Projects_Settings::get_settings_slug()))
+				);
+				?>
+			</p>
+		<?php endif; ?>
 	</div>
 
 	<div class="awaid-admin-section">
 		<h3><?php esc_html_e('الضمانات', 'awaid-projects'); ?></h3>
-		<table class="widefat awaid-repeater" id="awaid_warranties_table">
-			<thead><tr><th><?php esc_html_e('المسمى', 'awaid-projects'); ?></th><th><?php esc_html_e('المدة', 'awaid-projects'); ?></th><th class="awaid-col-actions"></th></tr></thead>
-			<tbody>
-				<?php foreach ($warranties as $i => $row) : ?>
-					<tr class="awaid-repeater-row">
-						<td><input type="text" class="widefat" name="awaid_project[warranties][<?php echo esc_attr((string) $i); ?>][title]" value="<?php echo esc_attr((string) ($row['title'] ?? '')); ?>"></td>
-						<td><input type="text" class="widefat" name="awaid_project[warranties][<?php echo esc_attr((string) $i); ?>][period]" value="<?php echo esc_attr((string) ($row['period'] ?? '')); ?>" placeholder="<?php esc_attr_e('e.g. 5 years', 'awaid-projects'); ?>"></td>
-						<td><button type="button" class="button awaid-remove-row"><?php esc_html_e('حذف', 'awaid-projects'); ?></button></td>
-					</tr>
+		<?php if ($catalog_warranties) : ?>
+			<input type="search" class="widefat awaid-catalog-search" data-target="#awaid-warranty-options" placeholder="<?php esc_attr_e('ابحث عن ضمان', 'awaid-projects'); ?>">
+			<div class="awaid-catalog-options" id="awaid-warranty-options">
+				<?php foreach ($catalog_warranties as $warranty) : ?>
+					<?php
+					$warranty_id = isset($warranty['id']) ? (string) $warranty['id'] : '';
+					$warranty_title = isset($warranty['title']) ? (string) $warranty['title'] : '';
+					$warranty_period = isset($warranty['period']) ? (string) $warranty['period'] : '';
+					$warranty_icon = isset($warranty['icon']) ? (string) $warranty['icon'] : '';
+					if ($warranty_id === '' || $warranty_title === '') {
+						continue;
+					}
+					?>
+					<label class="awaid-catalog-option">
+						<input type="checkbox" name="awaid_project[warranty_ids][]" value="<?php echo esc_attr($warranty_id); ?>" <?php checked(in_array($warranty_id, $selected_warranty_ids, true)); ?>>
+						<span class="awaid-catalog-option__body">
+							<?php if ($warranty_icon !== '') : ?>
+								<i data-lucide="<?php echo esc_attr($warranty_icon); ?>" class="awaid-lucide-icon" aria-hidden="true"></i>
+							<?php endif; ?>
+							<span><?php echo esc_html($warranty_title); ?></span>
+							<?php if ($warranty_period !== '') : ?>
+								<small class="awaid-catalog-option__meta"><?php echo esc_html($warranty_period); ?></small>
+							<?php endif; ?>
+						</span>
+					</label>
 				<?php endforeach; ?>
-			</tbody>
-		</table>
-		<p><button type="button" class="button" data-awaid-add-warranty><?php esc_html_e('إضافة ضمان', 'awaid-projects'); ?></button></p>
+			</div>
+		<?php else : ?>
+			<p class="description">
+				<?php
+				printf(
+					/* translators: %s: settings url */
+					wp_kses_post(__('No warranties yet. Add them first in <a href="%s">Catalog Settings</a>.', 'awaid-projects')),
+					esc_url(admin_url('edit.php?post_type=awaid_project&page=' . Awaid_Projects_Settings::get_settings_slug()))
+				);
+				?>
+			</p>
+		<?php endif; ?>
 	</div>
 
 	<div class="awaid-admin-section">
 		<h3><?php esc_html_e('المعالم القريبة', 'awaid-projects'); ?></h3>
-		<table class="widefat awaid-repeater" id="awaid_nearby_table">
-			<thead><tr><th><?php esc_html_e('المسمى', 'awaid-projects'); ?></th><th><?php esc_html_e('المسافة', 'awaid-projects'); ?></th><th class="awaid-col-actions"></th></tr></thead>
-			<tbody>
-				<?php foreach ($nearby as $i => $row) : ?>
-					<tr class="awaid-repeater-row">
-						<td><input type="text" class="widefat" name="awaid_project[nearby][<?php echo esc_attr((string) $i); ?>][name]" value="<?php echo esc_attr((string) ($row['name'] ?? '')); ?>"></td>
-						<td><input type="text" class="widefat" name="awaid_project[nearby][<?php echo esc_attr((string) $i); ?>][distance]" value="<?php echo esc_attr((string) ($row['distance'] ?? '')); ?>" placeholder="<?php esc_attr_e('e.g. 1.5 km', 'awaid-projects'); ?>"></td>
-						<td><button type="button" class="button awaid-remove-row"><?php esc_html_e('حذف', 'awaid-projects'); ?></button></td>
-					</tr>
+		<?php if ($catalog_nearby) : ?>
+			<input type="search" class="widefat awaid-catalog-search" data-target="#awaid-nearby-options" placeholder="<?php esc_attr_e('ابحث عن معلم قريب', 'awaid-projects'); ?>">
+			<div class="awaid-catalog-options" id="awaid-nearby-options">
+				<?php foreach ($catalog_nearby as $nearby) : ?>
+					<?php
+					$nearby_id = isset($nearby['id']) ? (string) $nearby['id'] : '';
+					$nearby_title = isset($nearby['title']) ? (string) $nearby['title'] : '';
+					$nearby_icon = isset($nearby['icon']) ? (string) $nearby['icon'] : '';
+					if ($nearby_id === '' || $nearby_title === '') {
+						continue;
+					}
+					?>
+					<label class="awaid-catalog-option">
+						<input type="checkbox" name="awaid_project[nearby_ids][]" value="<?php echo esc_attr($nearby_id); ?>" <?php checked(in_array($nearby_id, $selected_nearby_ids, true)); ?>>
+						<span class="awaid-catalog-option__body">
+							<?php if ($nearby_icon !== '') : ?>
+								<i data-lucide="<?php echo esc_attr($nearby_icon); ?>" class="awaid-lucide-icon" aria-hidden="true"></i>
+							<?php endif; ?>
+							<span><?php echo esc_html($nearby_title); ?></span>
+						</span>
+					</label>
 				<?php endforeach; ?>
-			</tbody>
-		</table>
-		<p><button type="button" class="button" data-awaid-add-nearby><?php esc_html_e('إضافة معلم', 'awaid-projects'); ?></button></p>
+			</div>
+		<?php else : ?>
+			<p class="description">
+				<?php
+				printf(
+					/* translators: %s: settings url */
+					wp_kses_post(__('No nearby items yet. Add them first in <a href="%s">Catalog Settings</a>.', 'awaid-projects')),
+					esc_url(admin_url('edit.php?post_type=awaid_project&page=' . Awaid_Projects_Settings::get_settings_slug()))
+				);
+				?>
+			</p>
+		<?php endif; ?>
 	</div>
 
 	<div class="awaid-admin-section">
@@ -320,26 +381,6 @@ if (!$units) {
 	</div>
 </div>
 
-<script type="text/html" id="tmpl-awaid-feature-row">
-	<tr class="awaid-repeater-row">
-		<td><input type="text" class="widefat" name="awaid_project[features][__i__][title]" value=""></td>
-		<td><button type="button" class="button awaid-remove-row"><?php echo esc_html(__('Remove', 'awaid-projects')); ?></button></td>
-	</tr>
-</script>
-<script type="text/html" id="tmpl-awaid-warranty-row">
-	<tr class="awaid-repeater-row">
-		<td><input type="text" class="widefat" name="awaid_project[warranties][__i__][title]" value=""></td>
-		<td><input type="text" class="widefat" name="awaid_project[warranties][__i__][period]" value=""></td>
-		<td><button type="button" class="button awaid-remove-row"><?php echo esc_html(__('Remove', 'awaid-projects')); ?></button></td>
-	</tr>
-</script>
-<script type="text/html" id="tmpl-awaid-nearby-row">
-	<tr class="awaid-repeater-row">
-		<td><input type="text" class="widefat" name="awaid_project[nearby][__i__][name]" value=""></td>
-		<td><input type="text" class="widefat" name="awaid_project[nearby][__i__][distance]" value=""></td>
-		<td><button type="button" class="button awaid-remove-row"><?php echo esc_html(__('Remove', 'awaid-projects')); ?></button></td>
-	</tr>
-</script>
 <script type="text/html" id="tmpl-awaid-unit-highlight-row">
 	<tr class="awaid-repeater-row">
 		<td><input type="url" class="widefat" name="awaid_project[units][__i__][highlights][__j__][icon]" value="" placeholder="https://"></td>

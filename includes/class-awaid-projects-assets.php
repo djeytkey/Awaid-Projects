@@ -13,11 +13,14 @@ class Awaid_Projects_Assets {
 	}
 
 	public static function admin_assets(string $hook): void {
-		if (!in_array($hook, ['post.php', 'post-new.php'], true)) {
+		$screen = get_current_screen();
+		if (!$screen) {
 			return;
 		}
-		$screen = get_current_screen();
-		if (!$screen || $screen->post_type !== 'awaid_project') {
+
+		$is_project_editor = in_array($hook, ['post.php', 'post-new.php'], true) && $screen->post_type === 'awaid_project';
+		$is_settings_page  = $screen->id === 'awaid_project_page_' . Awaid_Projects_Settings::get_settings_slug();
+		if (!$is_project_editor && !$is_settings_page) {
 			return;
 		}
 
@@ -28,12 +31,22 @@ class Awaid_Projects_Assets {
 			AWAID_PROJECTS_VERSION
 		);
 
-		wp_enqueue_media();
+		wp_enqueue_script(
+			'awaid-projects-lucide',
+			'https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js',
+			[],
+			AWAID_PROJECTS_VERSION,
+			true
+		);
+
+		if ($is_project_editor) {
+			wp_enqueue_media();
+		}
 
 		wp_enqueue_script(
 			'awaid-projects-admin',
 			AWAID_PROJECTS_URL . 'assets/js/admin.js',
-			['jquery'],
+			['jquery', 'awaid-projects-lucide'],
 			AWAID_PROJECTS_VERSION,
 			true
 		);
@@ -96,6 +109,13 @@ class Awaid_Projects_Assets {
 
 		wp_enqueue_style('swiper');
 		wp_enqueue_style('leaflet');
+		wp_enqueue_script(
+			'awaid-projects-lucide',
+			'https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js',
+			[],
+			AWAID_PROJECTS_VERSION,
+			true
+		);
 		wp_enqueue_style(
 			'awaid-projects-frontend',
 			AWAID_PROJECTS_URL . 'assets/css/frontend.css',
@@ -106,7 +126,7 @@ class Awaid_Projects_Assets {
 		wp_enqueue_script(
 			'awaid-projects-frontend',
 			AWAID_PROJECTS_URL . 'assets/js/frontend.js',
-			['swiper', 'leaflet'],
+			['swiper', 'leaflet', 'awaid-projects-lucide'],
 			AWAID_PROJECTS_VERSION,
 			true
 		);

@@ -66,6 +66,10 @@ class Awaid_Projects_Meta {
 	public static function render_box(WP_Post $post): void {
 		wp_nonce_field(self::NONCE_ACTION, self::NONCE_NAME);
 		$d = self::get_all((int) $post->ID);
+		$catalog = Awaid_Projects_Settings::get_catalog();
+		$selected_feature_ids = Awaid_Projects_Settings::extract_selected_ids('features', $d['features'] ?? []);
+		$selected_warranty_ids = Awaid_Projects_Settings::extract_selected_ids('warranties', $d['warranties'] ?? []);
+		$selected_nearby_ids = Awaid_Projects_Settings::extract_selected_ids('nearby', $d['nearby'] ?? []);
 
 		$brochure_id = (int) ($d['brochure_id'] ?? 0);
 		$brochure_url = $brochure_id ? wp_get_attachment_url($brochure_id) : '';
@@ -130,33 +134,16 @@ class Awaid_Projects_Meta {
 		}
 
 		$features = isset($raw['features']) && is_array($raw['features']) ? $raw['features'] : [];
-		$out['features'] = [];
-		foreach ($features as $row) {
-			$t = isset($row['title']) ? sanitize_text_field((string) $row['title']) : '';
-			if ($t !== '') {
-				$out['features'][] = ['title' => $t];
-			}
-		}
+		$feature_ids = isset($raw['feature_ids']) && is_array($raw['feature_ids']) ? $raw['feature_ids'] : $features;
+		$out['features'] = Awaid_Projects_Settings::extract_selected_ids('features', $feature_ids);
 
 		$warranties = isset($raw['warranties']) && is_array($raw['warranties']) ? $raw['warranties'] : [];
-		$out['warranties'] = [];
-		foreach ($warranties as $row) {
-			$t = isset($row['title']) ? sanitize_text_field((string) $row['title']) : '';
-			$p = isset($row['period']) ? sanitize_text_field((string) $row['period']) : '';
-			if ($t !== '' || $p !== '') {
-				$out['warranties'][] = ['title' => $t, 'period' => $p];
-			}
-		}
+		$warranty_ids = isset($raw['warranty_ids']) && is_array($raw['warranty_ids']) ? $raw['warranty_ids'] : $warranties;
+		$out['warranties'] = Awaid_Projects_Settings::extract_selected_ids('warranties', $warranty_ids);
 
 		$nearby = isset($raw['nearby']) && is_array($raw['nearby']) ? $raw['nearby'] : [];
-		$out['nearby'] = [];
-		foreach ($nearby as $row) {
-			$n = isset($row['name']) ? sanitize_text_field((string) $row['name']) : '';
-			$dist = isset($row['distance']) ? sanitize_text_field((string) $row['distance']) : '';
-			if ($n !== '' || $dist !== '') {
-				$out['nearby'][] = ['name' => $n, 'distance' => $dist];
-			}
-		}
+		$nearby_ids = isset($raw['nearby_ids']) && is_array($raw['nearby_ids']) ? $raw['nearby_ids'] : $nearby;
+		$out['nearby'] = Awaid_Projects_Settings::extract_selected_ids('nearby', $nearby_ids);
 
 		$units = isset($raw['units']) && is_array($raw['units']) ? $raw['units'] : [];
 		$out['units'] = [];

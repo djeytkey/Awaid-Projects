@@ -17,6 +17,7 @@ define('AWAID_PROJECTS_URL', plugin_dir_url(__FILE__));
 
 require_once AWAID_PROJECTS_PATH . 'includes/template-tags.php';
 require_once AWAID_PROJECTS_PATH . 'includes/class-awaid-projects-cpt.php';
+require_once AWAID_PROJECTS_PATH . 'includes/class-awaid-projects-settings.php';
 require_once AWAID_PROJECTS_PATH . 'includes/class-awaid-projects-meta.php';
 require_once AWAID_PROJECTS_PATH . 'includes/class-awaid-projects-template.php';
 require_once AWAID_PROJECTS_PATH . 'includes/class-awaid-projects-assets.php';
@@ -26,6 +27,7 @@ require_once AWAID_PROJECTS_PATH . 'includes/class-awaid-projects-assets.php';
  */
 function awaid_projects_boot(): void {
 	Awaid_Projects_CPT::init();
+	Awaid_Projects_Settings::init();
 	Awaid_Projects_Meta::init();
 	Awaid_Projects_Template::init();
 	Awaid_Projects_Assets::init();

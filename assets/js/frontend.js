@@ -1,6 +1,16 @@
 (function () {
 	'use strict';
 
+	function renderLucide() {
+		if (window.lucide && typeof window.lucide.createIcons === 'function') {
+			window.lucide.createIcons({
+				attrs: {
+					'stroke-width': 1.9
+				}
+			});
+		}
+	}
+
 	function initFilters(root) {
 		var pills = root.querySelectorAll('.awaid-unit-filter');
 		var cards = root.querySelectorAll('.awaid-unit-card');
@@ -735,6 +745,7 @@
 			initProjectMap(root);
 			initUnitModal(root);
 			initDesktopSidebarSticky(root);
+			renderLucide();
 		}
 	});
 })();
