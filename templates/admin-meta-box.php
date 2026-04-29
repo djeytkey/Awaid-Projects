@@ -183,6 +183,12 @@ if (!$units) {
 		<?php if ($catalog_features): ?>
 			<input type="search" class="widefat awaid-catalog-search" data-target="#awaid-feature-options"
 				placeholder="<?php esc_attr_e('ابحث عن ميزة', 'awaid-projects'); ?>">
+			<p>
+				<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="select"
+					data-target="#awaid-feature-options"><?php esc_html_e('تحديد الكل', 'awaid-projects'); ?></button>
+				<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="unselect"
+					data-target="#awaid-feature-options"><?php esc_html_e('إلغاء تحديد الكل', 'awaid-projects'); ?></button>
+			</p>
 			<div class="awaid-catalog-options" id="awaid-feature-options">
 				<?php foreach ($catalog_features as $feature): ?>
 					<?php
@@ -224,6 +230,12 @@ if (!$units) {
 		<?php if ($catalog_warranties): ?>
 			<input type="search" class="widefat awaid-catalog-search" data-target="#awaid-warranty-options"
 				placeholder="<?php esc_attr_e('ابحث عن ضمان', 'awaid-projects'); ?>">
+			<p>
+				<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="select"
+					data-target="#awaid-warranty-options"><?php esc_html_e('تحديد الكل', 'awaid-projects'); ?></button>
+				<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="unselect"
+					data-target="#awaid-warranty-options"><?php esc_html_e('إلغاء تحديد الكل', 'awaid-projects'); ?></button>
+			</p>
 			<div class="awaid-catalog-options" id="awaid-warranty-options">
 				<?php foreach ($catalog_warranties as $warranty): ?>
 					<?php
@@ -269,6 +281,12 @@ if (!$units) {
 		<?php if ($catalog_nearby): ?>
 			<input type="search" class="widefat awaid-catalog-search" data-target="#awaid-nearby-options"
 				placeholder="<?php esc_attr_e('ابحث عن معلم قريب', 'awaid-projects'); ?>">
+			<p>
+				<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="select"
+					data-target="#awaid-nearby-options"><?php esc_html_e('تحديد الكل', 'awaid-projects'); ?></button>
+				<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="unselect"
+					data-target="#awaid-nearby-options"><?php esc_html_e('إلغاء تحديد الكل', 'awaid-projects'); ?></button>
+			</p>
 			<div class="awaid-catalog-options" id="awaid-nearby-options">
 				<?php foreach ($catalog_nearby as $nearby): ?>
 					<?php
@@ -433,6 +451,12 @@ if (!$units) {
 								<input type="search" class="widefat awaid-catalog-search"
 									data-target="#awaid-unit-feature-options-<?php echo esc_attr($uid); ?>"
 									placeholder="<?php esc_attr_e('ابحث عن ميزة', 'awaid-projects'); ?>">
+								<p>
+									<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="select"
+										data-target="#awaid-unit-feature-options-<?php echo esc_attr($uid); ?>"><?php esc_html_e('تحديد الكل', 'awaid-projects'); ?></button>
+									<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="unselect"
+										data-target="#awaid-unit-feature-options-<?php echo esc_attr($uid); ?>"><?php esc_html_e('إلغاء تحديد الكل', 'awaid-projects'); ?></button>
+								</p>
 								<div class="awaid-catalog-options" id="awaid-unit-feature-options-<?php echo esc_attr($uid); ?>">
 									<?php foreach ($catalog_features as $feature): ?>
 										<?php
@@ -524,6 +548,12 @@ if (!$units) {
 				<?php if ($catalog_features): ?>
 					<input type="search" class="widefat awaid-catalog-search" data-target="#awaid-unit-feature-options-__i__"
 						placeholder="<?php echo esc_attr(__('ابحث عن ميزة', 'awaid-projects')); ?>">
+					<p>
+						<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="select"
+							data-target="#awaid-unit-feature-options-__i__"><?php echo esc_html(__('تحديد الكل', 'awaid-projects')); ?></button>
+						<button type="button" class="button button-small" data-awaid-catalog-toggle data-action="unselect"
+							data-target="#awaid-unit-feature-options-__i__"><?php echo esc_html(__('إلغاء تحديد الكل', 'awaid-projects')); ?></button>
+					</p>
 					<div class="awaid-catalog-options" id="awaid-unit-feature-options-__i__">
 						<?php foreach ($catalog_features as $feature): ?>
 							<?php

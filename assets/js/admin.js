@@ -88,6 +88,17 @@
 		});
 	});
 
+	$(document).on('click', '[data-awaid-catalog-toggle]', function (e) {
+		e.preventDefault();
+		var target = String($(this).data('target') || '');
+		var action = String($(this).data('action') || '');
+		if (!target || (action !== 'select' && action !== 'unselect')) {
+			return;
+		}
+		var checked = action === 'select';
+		$(target).find('input[type="checkbox"]').prop('checked', checked).trigger('change');
+	});
+
 	function addUnitBlock() {
 		var idx = nextIndex($('#awaid_units_table'));
 		var html = $('#tmpl-awaid-unit-block').html();
