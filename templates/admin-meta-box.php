@@ -301,6 +301,16 @@ if (!$units) {
 				$uid = (string) $i;
 				?>
 				<tbody class="awaid-unit-block">
+					<tr class="awaid-unit-block__labels">
+						<th><?php esc_html_e('Code', 'awaid-projects'); ?></th>
+						<th><?php esc_html_e('Type', 'awaid-projects'); ?></th>
+						<th><?php esc_html_e('Price', 'awaid-projects'); ?></th>
+						<th><?php esc_html_e('Area m²', 'awaid-projects'); ?></th>
+						<th><?php esc_html_e('Beds', 'awaid-projects'); ?></th>
+						<th><?php esc_html_e('Baths', 'awaid-projects'); ?></th>
+						<th><?php esc_html_e('Status', 'awaid-projects'); ?></th>
+						<th class="awaid-col-actions"></th>
+					</tr>
 					<tr class="awaid-repeater-row awaid-unit-block__main">
 						<td><input type="text" name="awaid_project[units][<?php echo esc_attr($uid); ?>][code]" value="<?php echo esc_attr((string) ($row['code'] ?? '')); ?>"></td>
 						<td><input type="text" name="awaid_project[units][<?php echo esc_attr($uid); ?>][type]" value="<?php echo esc_attr((string) ($row['type'] ?? '')); ?>"></td>
@@ -395,6 +405,16 @@ if (!$units) {
 </script>
 <script type="text/html" id="tmpl-awaid-unit-block">
 	<tbody class="awaid-unit-block">
+		<tr class="awaid-unit-block__labels">
+			<th><?php echo esc_html(__('Code', 'awaid-projects')); ?></th>
+			<th><?php echo esc_html(__('Type', 'awaid-projects')); ?></th>
+			<th><?php echo esc_html(__('Price', 'awaid-projects')); ?></th>
+			<th><?php echo esc_html(__('Area m²', 'awaid-projects')); ?></th>
+			<th><?php echo esc_html(__('Beds', 'awaid-projects')); ?></th>
+			<th><?php echo esc_html(__('Baths', 'awaid-projects')); ?></th>
+			<th><?php echo esc_html(__('Status', 'awaid-projects')); ?></th>
+			<th class="awaid-col-actions"></th>
+		</tr>
 		<tr class="awaid-repeater-row awaid-unit-block__main">
 			<td><input type="text" name="awaid_project[units][__i__][code]" value=""></td>
 			<td><input type="text" name="awaid_project[units][__i__][type]" value=""></td>
