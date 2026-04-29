@@ -609,11 +609,7 @@
 					}
 					p.push('<div class="awaid-unit-modal__highlight">');
 					if (h.icon) {
-						if (/^(https?:)?\/\//i.test(h.icon) || /^data:image\//i.test(h.icon)) {
-							p.push('<div class="awaid-unit-modal__highlight-ic"><img src="' + awaidEsc(h.icon) + '" width="50" height="50" alt=""></div>');
-						} else {
-							p.push('<div class="awaid-unit-modal__highlight-ic"><i data-lucide="' + awaidEsc(h.icon) + '" class="awaid-lucide-icon" aria-hidden="true"></i></div>');
-						}
+						p.push('<div class="awaid-unit-modal__highlight-ic"><i data-lucide="' + awaidEsc(h.icon) + '" class="awaid-lucide-icon" aria-hidden="true"></i></div>');
 					}
 					p.push('<div class="awaid-unit-modal__highlight-body">');
 					if (h.title) {
@@ -659,6 +655,7 @@
 			}
 			closeUnitModal();
 			body.innerHTML = buildUnitModalHtml(u);
+			renderLucide();
 			modal.removeAttribute('hidden');
 			modal.setAttribute('aria-hidden', 'false');
 			document.body.style.overflow = 'hidden';
