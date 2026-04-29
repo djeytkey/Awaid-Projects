@@ -115,41 +115,13 @@
 		}
 	});
 
-	$(document).on('click', '[data-awaid-add-unit-highlight]', function (e) {
-		e.preventDefault();
-		var $wrap = $(this).closest('.awaid-unit-block');
-		var $tbl = $wrap.find('.awaid-unit-highlights');
-		var $htb = $tbl.find('tbody');
-		var unitIdx = $tbl.data('unit-index');
-		if (!unitIdx) {
-			var m = $wrap.find('input[name*="[code]"]').attr('name');
-			unitIdx = m ? m.match(/units\]\[([^\]]+)\]/) : null;
-			unitIdx = unitIdx ? unitIdx[1] : String(Date.now());
-		}
-		var j = nextIndex($htb);
-		var row = $('#tmpl-awaid-unit-highlight-row').html();
-		if (!row) {
-			return;
-		}
-		row = row.replace(/__i__/g, unitIdx).replace(/__j__/g, j);
-		$htb.append(row);
-	});
-
 	$(document).on('click', '.awaid-remove-row', function (e) {
 		e.preventDefault();
 		var $row = $(this).closest('tr');
 		var $tb = $row.closest('tbody');
 		$row.remove();
 		if ($tb.find('tr').length === 0) {
-			if ($tb.closest('.awaid-unit-highlights').length) {
-				var $tbl = $tb.closest('.awaid-unit-highlights');
-				var unitIdx = $tbl.data('unit-index');
-				var j = nextIndex($tb);
-				var html = $('#tmpl-awaid-unit-highlight-row').html();
-				if (html) {
-					$tb.append(html.replace(/__i__/g, unitIdx).replace(/__j__/g, j));
-				}
-			} else if ($tb.closest('#awaid_settings_features').length) {
+			if ($tb.closest('#awaid_settings_features').length) {
 				addFromTemplate($tb, 'tmpl-awaid-settings-row-feature');
 			} else if ($tb.closest('#awaid_settings_warranties').length) {
 				addFromTemplate($tb, 'tmpl-awaid-settings-row-warranty');

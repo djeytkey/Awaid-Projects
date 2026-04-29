@@ -37,7 +37,7 @@ $awaid_unit_default = [
 	'kitchens' => '',
 	'whatsapp' => '',
 	'phone' => '',
-	'highlights' => [['icon' => '', 'title' => '', 'text' => '']],
+	'highlights' => [],
 ];
 if (!$units) {
 	$units = [$awaid_unit_default];
@@ -330,7 +330,7 @@ if (!$units) {
 				$ug_ids = is_array($row['gallery_ids'] ?? null) ? array_map('absint', $row['gallery_ids']) : [];
 				$ug_ids = array_values(array_filter(array_unique($ug_ids)));
 				$ug_csv = implode(',', $ug_ids);
-				$highlights = isset($row['highlights']) && is_array($row['highlights']) && $row['highlights'] !== [] ? $row['highlights'] : [['icon' => '', 'title' => '', 'text' => '']];
+				$unit_highlight_ids = Awaid_Projects_Settings::extract_selected_ids('features', $row['highlights'] ?? []);
 				$uid = (string) $i;
 				?>
 				<tbody class="awaid-unit-block">
@@ -428,41 +428,46 @@ if (!$units) {
 											value="<?php echo esc_attr((string) ($row['phone'] ?? '')); ?>"></td>
 								</tr>
 							</table>
-							<p><strong><?php esc_html_e('أبرز النقاط (رابط الأيقونة + العنوان + النص)', 'awaid-projects'); ?></strong>
-							</p>
-							<table class="widefat awaid-repeater awaid-unit-highlights"
-								data-unit-index="<?php echo esc_attr($uid); ?>">
-								<thead>
-									<tr>
-										<th><?php esc_html_e('رابط الأيقونة', 'awaid-projects'); ?></th>
-										<th><?php esc_html_e('المسمى', 'awaid-projects'); ?></th>
-										<!-- <th><?php esc_html_e('Text', 'awaid-projects'); ?></th> -->
-										<th class="awaid-col-actions"></th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php foreach ($highlights as $j => $hrow): ?>
-										<tr class="awaid-repeater-row">
-											<td><input type="url" class="widefat"
-													name="awaid_project[units][<?php echo esc_attr($uid); ?>][highlights][<?php echo esc_attr((string) $j); ?>][icon]"
-													value="<?php echo esc_attr((string) ($hrow['icon'] ?? '')); ?>"
-													placeholder="https://"></td>
-											<td><input type="text" class="widefat"
-													name="awaid_project[units][<?php echo esc_attr($uid); ?>][highlights][<?php echo esc_attr((string) $j); ?>][title]"
-													value="<?php echo esc_attr((string) ($hrow['title'] ?? '')); ?>"></td>
-											<td><textarea class="widefat" rows="2"
-													name="awaid_project[units][<?php echo esc_attr($uid); ?>][highlights][<?php echo esc_attr((string) $j); ?>][text]"><?php echo esc_textarea((string) ($hrow['text'] ?? '')); ?></textarea>
-											</td>
-											<td><button type="button"
-													class="button awaid-remove-row"><?php esc_html_e('حذف', 'awaid-projects'); ?></button>
-											</td>
-										</tr>
+							<p><strong><?php esc_html_e('أبرز النقاط (اختر من المميزات)', 'awaid-projects'); ?></strong></p>
+							<?php if ($catalog_features): ?>
+								<input type="search" class="widefat awaid-catalog-search"
+									data-target="#awaid-unit-feature-options-<?php echo esc_attr($uid); ?>"
+									placeholder="<?php esc_attr_e('ابحث عن ميزة', 'awaid-projects'); ?>">
+								<div class="awaid-catalog-options" id="awaid-unit-feature-options-<?php echo esc_attr($uid); ?>">
+									<?php foreach ($catalog_features as $feature): ?>
+										<?php
+										$feature_id = isset($feature['id']) ? (string) $feature['id'] : '';
+										$feature_title = isset($feature['title']) ? (string) $feature['title'] : '';
+										$feature_icon = isset($feature['icon']) ? (string) $feature['icon'] : '';
+										if ($feature_id === '' || $feature_title === '') {
+											continue;
+										}
+										?>
+										<label class="awaid-catalog-option">
+											<input type="checkbox" name="awaid_project[units][<?php echo esc_attr($uid); ?>][highlights][]"
+												value="<?php echo esc_attr($feature_id); ?>"
+												<?php checked(in_array($feature_id, $unit_highlight_ids, true)); ?>>
+											<span class="awaid-catalog-option__body">
+												<?php if ($feature_icon !== ''): ?>
+													<i data-lucide="<?php echo esc_attr($feature_icon); ?>" class="awaid-lucide-icon"
+														aria-hidden="true"></i>
+												<?php endif; ?>
+												<span><?php echo esc_html($feature_title); ?></span>
+											</span>
+										</label>
 									<?php endforeach; ?>
-								</tbody>
-							</table>
-							<p><button type="button" class="button"
-									data-awaid-add-unit-highlight><?php esc_html_e('أضف ميزة', 'awaid-projects'); ?></button>
-							</p>
+								</div>
+							<?php else: ?>
+								<p class="description">
+									<?php
+									printf(
+										/* translators: %s: settings url */
+										wp_kses_post(__('No features yet. Add them first in <a href="%s">Catalog Settings</a>.', 'awaid-projects')),
+										esc_url(admin_url('edit.php?post_type=awaid_project&page=' . Awaid_Projects_Settings::get_settings_slug()))
+									);
+									?>
+								</p>
+							<?php endif; ?>
 						</td>
 					</tr>
 				</tbody>
@@ -473,14 +478,6 @@ if (!$units) {
 	</div>
 </div>
 
-<script type="text/html" id="tmpl-awaid-unit-highlight-row">
-	<tr class="awaid-repeater-row">
-		<td><input type="url" class="widefat" name="awaid_project[units][__i__][highlights][__j__][icon]" value="" placeholder="https://"></td>
-		<td><input type="text" class="widefat" name="awaid_project[units][__i__][highlights][__j__][title]" value=""></td>
-		<td><textarea class="widefat" rows="2" name="awaid_project[units][__i__][highlights][__j__][text]"></textarea></td>
-		<td><button type="button" class="button awaid-remove-row"><?php echo esc_html(__('حذف', 'awaid-projects')); ?></button></td>
-	</tr>
-</script>
 <script type="text/html" id="tmpl-awaid-unit-block">
 	<tbody class="awaid-unit-block">
 		<tr class="awaid-unit-block__labels">
@@ -523,26 +520,42 @@ if (!$units) {
 					<tr><th><?php echo esc_html(__('رقم واتساب', 'awaid-projects')); ?></th><td><input type="text" class="widefat" name="awaid_project[units][__i__][whatsapp]" value="" placeholder="<?php echo esc_attr(__('e.g. 9665xxxxxxxx', 'awaid-projects')); ?>"></td></tr>
 					<tr><th><?php echo esc_html(__('الهاتف', 'awaid-projects')); ?></th><td><input type="text" class="widefat" name="awaid_project[units][__i__][phone]" value=""></td></tr>
 				</table>
-				<p><strong><?php echo esc_html(__('أبرز النقاط (رابط الأيقونة + العنوان + النص)', 'awaid-projects')); ?></strong></p>
-				<table class="widefat awaid-repeater awaid-unit-highlights" data-unit-index="__i__">
-					<thead>
-						<tr>
-							<th><?php echo esc_html(__('رابط الأيقونة', 'awaid-projects')); ?></th>
-							<th><?php echo esc_html(__('المسمى', 'awaid-projects')); ?></th>
-							<!-- <th><?php echo esc_html(__('Text', 'awaid-projects')); ?></th> -->
-							<th class="awaid-col-actions"></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="awaid-repeater-row">
-							<td><input type="url" class="widefat" name="awaid_project[units][__i__][highlights][0][icon]" value="" placeholder="https://"></td>
-							<td><input type="text" class="widefat" name="awaid_project[units][__i__][highlights][0][title]" value=""></td>
-							<td><textarea class="widefat" rows="2" name="awaid_project[units][__i__][highlights][0][text]"></textarea></td>
-							<td><button type="button" class="button awaid-remove-row"><?php echo esc_html(__('حذف', 'awaid-projects')); ?></button></td>
-						</tr>
-					</tbody>
-				</table>
-				<p><button type="button" class="button" data-awaid-add-unit-highlight><?php echo esc_html(__('أضف ميزة', 'awaid-projects')); ?></button></p>
+				<p><strong><?php echo esc_html(__('أبرز النقاط (اختر من المميزات)', 'awaid-projects')); ?></strong></p>
+				<?php if ($catalog_features): ?>
+					<input type="search" class="widefat awaid-catalog-search" data-target="#awaid-unit-feature-options-__i__"
+						placeholder="<?php echo esc_attr(__('ابحث عن ميزة', 'awaid-projects')); ?>">
+					<div class="awaid-catalog-options" id="awaid-unit-feature-options-__i__">
+						<?php foreach ($catalog_features as $feature): ?>
+							<?php
+							$feature_id = isset($feature['id']) ? (string) $feature['id'] : '';
+							$feature_title = isset($feature['title']) ? (string) $feature['title'] : '';
+							$feature_icon = isset($feature['icon']) ? (string) $feature['icon'] : '';
+							if ($feature_id === '' || $feature_title === '') {
+								continue;
+							}
+							?>
+							<label class="awaid-catalog-option">
+								<input type="checkbox" name="awaid_project[units][__i__][highlights][]" value="<?php echo esc_attr($feature_id); ?>">
+								<span class="awaid-catalog-option__body">
+									<?php if ($feature_icon !== ''): ?>
+										<i data-lucide="<?php echo esc_attr($feature_icon); ?>" class="awaid-lucide-icon" aria-hidden="true"></i>
+									<?php endif; ?>
+									<span><?php echo esc_html($feature_title); ?></span>
+								</span>
+							</label>
+						<?php endforeach; ?>
+					</div>
+				<?php else: ?>
+					<p class="description">
+						<?php
+						printf(
+							/* translators: %s: settings url */
+							wp_kses_post(__('No features yet. Add them first in <a href="%s">Catalog Settings</a>.', 'awaid-projects')),
+							esc_url(admin_url('edit.php?post_type=awaid_project&page=' . Awaid_Projects_Settings::get_settings_slug()))
+						);
+						?>
+					</p>
+				<?php endif; ?>
 			</td>
 		</tr>
 	</tbody>

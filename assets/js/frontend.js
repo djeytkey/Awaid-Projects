@@ -604,19 +604,20 @@
 			if (u.highlights && u.highlights.length) {
 				p.push('<h4 class="awaid-unit-modal__feat-head">' + awaidEsc(labels.features) + '</h4><div class="awaid-unit-modal__highlights">');
 				u.highlights.forEach(function (h) {
-					if (!h || (!h.title && !h.text && !h.icon)) {
+					if (!h || (!h.title && !h.icon)) {
 						return;
 					}
 					p.push('<div class="awaid-unit-modal__highlight">');
 					if (h.icon) {
-						p.push('<div class="awaid-unit-modal__highlight-ic"><img src="' + awaidEsc(h.icon) + '" width="50" height="50" alt=""></div>');
+						if (/^(https?:)?\/\//i.test(h.icon) || /^data:image\//i.test(h.icon)) {
+							p.push('<div class="awaid-unit-modal__highlight-ic"><img src="' + awaidEsc(h.icon) + '" width="50" height="50" alt=""></div>');
+						} else {
+							p.push('<div class="awaid-unit-modal__highlight-ic"><i data-lucide="' + awaidEsc(h.icon) + '" class="awaid-lucide-icon" aria-hidden="true"></i></div>');
+						}
 					}
 					p.push('<div class="awaid-unit-modal__highlight-body">');
 					if (h.title) {
 						p.push('<h5 class="awaid-unit-modal__highlight-title">' + awaidEsc(h.title) + '</h5>');
-					}
-					if (h.text) {
-						p.push('<p class="awaid-unit-modal__highlight-text">' + awaidNl2brEsc(h.text) + '</p>');
 					}
 					p.push('</div></div>');
 				});

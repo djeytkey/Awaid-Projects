@@ -167,20 +167,10 @@ class Awaid_Projects_Meta {
 				}
 			}
 
-			$high_in = isset($row['highlights']) && is_array($row['highlights']) ? $row['highlights'] : [];
-			$highlights = [];
-			foreach ($high_in as $h) {
-				$icon = isset($h['icon']) ? esc_url_raw((string) $h['icon']) : '';
-				$ht    = isset($h['title']) ? sanitize_text_field((string) $h['title']) : '';
-				$htxt  = isset($h['text']) ? sanitize_textarea_field((string) $h['text']) : '';
-				if ($icon !== '' || $ht !== '' || $htxt !== '') {
-					$highlights[] = [
-						'icon'  => $icon,
-						'title' => $ht,
-						'text'  => $htxt,
-					];
-				}
-			}
+			$highlights = Awaid_Projects_Settings::extract_selected_ids(
+				'features',
+				isset($row['highlights']) ? $row['highlights'] : []
+			);
 
 			$out['units'][] = [
 				'code'         => $code,

@@ -144,11 +144,11 @@ while (have_posts()) :
 			];
 		}
 		$uhl = [];
-		foreach (is_array($u['highlights'] ?? null) ? $u['highlights'] : [] as $h) {
+		$unit_features = Awaid_Projects_Settings::resolve_selected_items('features', $u['highlights'] ?? []);
+		foreach ($unit_features as $feature) {
 			$uhl[] = [
-				'icon'  => isset($h['icon']) ? (string) $h['icon'] : '',
-				'title' => isset($h['title']) ? (string) $h['title'] : '',
-				'text'  => isset($h['text']) ? (string) $h['text'] : '',
+				'icon'  => isset($feature['icon']) ? (string) $feature['icon'] : '',
+				'title' => isset($feature['title']) ? (string) $feature['title'] : '',
 			];
 		}
 		$wa_raw = trim((string) ($u['whatsapp'] ?? ''));
