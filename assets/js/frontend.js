@@ -253,12 +253,14 @@
 		}).addTo(map);
 
 		var marker = window.L.marker([lat, lng]).addTo(map);
-		var popupHtml =
-			'<div class="text-center" dir="rtl">' +
-			'<h5 class="mb-2">' + awaidEsc(projectTitle) + '</h5>' +
-			(projectLocation ? '<span class="mb-2">' + awaidEsc(projectLocation) + '</span>' : '') +
-			'</div>';
-		marker.bindPopup(popupHtml).openPopup();
+		if (projectTitle || projectLocation) {
+			var popupHtml =
+				'<div class="text-center" dir="rtl">' +
+				(projectTitle ? '<h5 class="mb-2">' + awaidEsc(projectTitle) + '</h5>' : '') +
+				(projectLocation ? '<span class="mb-2">' + awaidEsc(projectLocation) + '</span>' : '') +
+				'</div>';
+			marker.bindPopup(popupHtml).openPopup();
+		}
 
 		window.setTimeout(function () {
 			map.invalidateSize();
