@@ -91,10 +91,10 @@ while (have_posts()) :
 	$upload_base = wp_upload_dir();
 	$upload_sub  = isset($upload_base['baseurl']) ? rtrim((string) $upload_base['baseurl'], '/') : '';
 	$spec_icons  = [
-		'area'      => $upload_sub !== '' ? $upload_sub . '/2026/04/move.png' : '',
-		'bedrooms'  => $upload_sub !== '' ? $upload_sub . '/2026/04/bed.png' : '',
-		'bathrooms' => $upload_sub !== '' ? $upload_sub . '/2026/04/bathtub-01.png' : '',
-		'currency' => $upload_sub !== '' ? $upload_sub . '/2026/04/currency.svg' : '',
+		'area'      => $upload_sub !== '' ? $upload_sub . '/2026/05/move.png' : '',
+		'bedrooms'  => $upload_sub !== '' ? $upload_sub . '/2026/05/bed.png' : '',
+		'bathrooms' => $upload_sub !== '' ? $upload_sub . '/2026/05/bathtub-01.png' : '',
+		'currency' => $upload_sub !== '' ? $upload_sub . '/2026/05/currency.svg' : '',
 	];
 	$specs_panel_dir = is_rtl() ? 'rtl' : 'ltr';
 
