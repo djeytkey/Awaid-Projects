@@ -312,14 +312,14 @@ while (have_posts()) :
 
 			<div class="awaid-sidebar-card__actions">
 				<?php if ($brochure_url) : ?>
-					<a class="awaid-btn awaid-btn--secondary awaid-btn--block" href="<?php echo esc_url($brochure_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('View brochure', 'awaid-projects'); ?></a>
+					<a class="awaid-btn awaid-btn--secondary awaid-btn--block" href="<?php echo esc_url($brochure_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('عرض ملف المشروع', 'awaid-projects'); ?></a>
 				<?php endif; ?>
-				<?php if ($map_url) : ?>
+				<!-- <?php if ($map_url) : ?>
 					<a class="awaid-btn awaid-btn--primary awaid-btn--block" href="<?php echo esc_url($map_url); ?>" target="_blank" rel="noopener"><?php esc_html_e('Open in Google Maps', 'awaid-projects'); ?></a>
 				<?php endif; ?>
 				<?php if ($units) : ?>
 					<a class="awaid-btn awaid-btn--primary awaid-btn--block" href="#awaid-units"><?php esc_html_e('Units', 'awaid-projects'); ?></a>
-				<?php endif; ?>
+				<?php endif; ?> -->
 			</div>
 		</div>
 	<?php
