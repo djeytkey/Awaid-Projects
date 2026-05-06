@@ -252,14 +252,6 @@
 			attribution: '&copy; OpenStreetMap contributors'
 		}).addTo(map);
 
-		window.L.circle([lat, lng], {
-			radius: 500,
-			color: '#007bff',
-			weight: 3,
-			fillColor: '#007bff',
-			fillOpacity: 0.1
-		}).addTo(map);
-
 		var marker = window.L.marker([lat, lng]).addTo(map);
 		var popupHtml =
 			'<div class="text-center" dir="rtl">' +
