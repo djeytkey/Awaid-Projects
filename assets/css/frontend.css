@@ -552,26 +552,31 @@ body.single-awaid_project .awaid-section__title {
 
 .awaid-unit-modal__meta li {
 	display: inline-flex;
-	align-items: center;
-	gap: 0.35rem;
+	align-items: flex-start;
+	/* gap: 0.1rem; */
 }
 
 .awaid-unit-modal__meta li + li {
-	padding-inline-start: 0.85rem;
+	/* padding-inline-start: 0.85rem; */
 }
 
 .awaid-unit-modal__meta li + li::before {
 	content: "";
 	width: 1px;
 	height: 18px;
-	background: var(--awaid-accent-2);
-	opacity: 0.65;
+	background: #b8860b;
+	opacity: 1;
 	margin-inline-end: 0.85rem;
 	flex-shrink: 0;
 }
 
 .awaid-unit-modal__meta img {
 	display: block;
+	margin-left: 0.2rem;
+}
+
+.awaid-unit-modal__meta svg {
+	margin-left: 0.2rem;
 }
 
 .awaid-unit-modal__kitchen-ico {

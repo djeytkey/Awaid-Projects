@@ -577,27 +577,27 @@
 				if (icons.bathrooms) {
 					p.push('<img src="' + awaidEsc(icons.bathrooms) + '" width="20" height="20" alt="" class="dark-image">');
 				}
-				p.push('<span>' + awaidEsc(u.bathrooms) + '</span></li>');
+				p.push('<span class="awaid-unit-modal__meta-k">' + awaidEsc(u.bathrooms) + '</span></li>');
 			}
 			if (u.bedrooms) {
 				p.push('<li>');
 				if (icons.bedrooms) {
 					p.push('<img src="' + awaidEsc(icons.bedrooms) + '" width="20" height="20" alt="" class="dark-image">');
 				}
-				p.push('<span>' + awaidEsc(u.bedrooms) + '</span></li>');
+				p.push('<span class="awaid-unit-modal__meta-k">' + awaidEsc(u.bedrooms) + '</span></li>');
 			}
 			if (u.area) {
 				p.push('<li>');
 				if (icons.area) {
 					p.push('<img src="' + awaidEsc(icons.area) + '" width="20" height="20" alt="" class="dark-image">');
 				}
-				p.push('<span>' + awaidEsc(u.area) + ' م²</span></li>');
+				p.push('<span class="awaid-unit-modal__meta-k">' + awaidEsc(u.area) + ' م²</span></li>');
 			}
 			if (u.kitchens) {
-				p.push('<li>' + AWAID_KITCHEN_SVG + '<span>' + awaidEsc(u.kitchens) + '</span></li>');
+				p.push('<li>' + AWAID_KITCHEN_SVG + '<span class="awaid-unit-modal__meta-k">' + awaidEsc(u.kitchens) + '</span></li>');
 			}
 			if (u.floor) {
-				p.push('<li><span class="awaid-unit-modal__meta-k">' + awaidEsc(labels.floor) + ':</span> <span>' + awaidEsc(u.floor) + '</span></li>');
+				p.push('<li><span>' + awaidEsc(labels.floor) + ': </span> <span class="awaid-unit-modal__meta-k">' + awaidEsc(u.floor) + '</span></li>');
 			}
 			p.push('</ul></div></div>');
 
