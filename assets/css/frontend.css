@@ -948,6 +948,10 @@ body.single-awaid_project .awaid-section__title {
 	float: inline-end;
 }
 
+.inlined .col-md-6 {
+    display: block !important;
+}
+
 .awaid-panel {
 	background: rgba(241, 241, 241, 0.62);
 	border-radius: calc(var(--awaid-radius) - 2px);
