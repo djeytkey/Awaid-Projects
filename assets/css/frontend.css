@@ -556,6 +556,20 @@ body.single-awaid_project .awaid-section__title {
 	gap: 0.35rem;
 }
 
+.awaid-unit-modal__meta li + li {
+	padding-inline-start: 0.85rem;
+}
+
+.awaid-unit-modal__meta li + li::before {
+	content: "";
+	width: 1px;
+	height: 18px;
+	background: var(--awaid-accent-2);
+	opacity: 0.65;
+	margin-inline-end: 0.85rem;
+	flex-shrink: 0;
+}
+
 .awaid-unit-modal__meta img {
 	display: block;
 }
@@ -681,8 +695,8 @@ body.single-awaid_project .awaid-section__title {
 	gap: 12px;
 	padding: 16px 18px;
 	border-radius: var(--awaid-radius);
-	border: 1px solid var(--awaid-line);
-	background: #fff;
+	border: 1px solid #dddddd;
+	background: #efefef;
 }
 
 .awaid-feature-tile__dot {
@@ -717,8 +731,8 @@ body.single-awaid_project .awaid-section__title {
 	gap: 12px;
 	padding: 18px;
 	border-radius: var(--awaid-radius);
-	border: 1px solid var(--awaid-line);
-	background: #fff;
+	border: 1px solid #dddddd;
+	background: #efefef;
 	box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
 }
 
