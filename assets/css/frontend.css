@@ -107,12 +107,13 @@ body.single-awaid_project .awaid-section__title {
 
 .awaid-btn--primary {
 	background: var(--awaid-accent);
-	color: #0b1220;
+	color: #ffffff;
 	box-shadow: 0 10px 30px rgba(184, 134, 11, 0.35);
 }
 
 .awaid-btn--primary:hover {
 	transform: translateY(-1px);
+	color: #ffffff;
 }
 
 .awaid-btn--ghost {
