@@ -624,12 +624,14 @@ while (have_posts()) :
 														<?php if ($icon !== '') : ?>
 															<i data-lucide="<?php echo esc_attr($icon); ?>" class="awaid-warranty-card__icon awaid-lucide-icon" aria-hidden="true"></i>
 														<?php endif; ?>
-														<?php if ($t !== '') : ?>
-															<h3 class="awaid-warranty-card__title"><?php echo esc_html($t); ?></h3>
-														<?php endif; ?>
-														<?php if ($p !== '') : ?>
-															<p class="awaid-warranty-card__period"><?php echo esc_html($p); ?></p>
-														<?php endif; ?>
+														<div class="awaid-warranty-card__body">
+															<?php if ($t !== '') : ?>
+																<h3 class="awaid-warranty-card__title"><?php echo esc_html($t); ?></h3>
+															<?php endif; ?>
+															<?php if ($p !== '') : ?>
+																<p class="awaid-warranty-card__period"><?php echo esc_html($p); ?></p>
+															<?php endif; ?>
+														</div>
 													</div>
 												<?php endforeach; ?>
 											</div>
