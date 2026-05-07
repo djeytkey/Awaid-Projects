@@ -637,15 +637,23 @@
 			p.push('<div class="awaid-unit-modal__actions">');
 			if (u.whatsappUrl) {
 				p.push(
-					'<a class="awaid-btn awaid-btn--primary awaid-btn--block" href="' +
+					'<a class="awaid-btn awaid-btn--primary awaid-btn--block awaid-unit-modal__action awaid-unit-modal__action--whatsapp" href="' +
 						awaidEsc(u.whatsappUrl) +
 						'" target="_blank" rel="noopener">' +
+						'<i class="fa fa-whatsapp" aria-hidden="true"></i>' +
 						awaidEsc(labels.whatsapp) +
 						'</a>'
 				);
 			}
 			if (u.telUrl) {
-				p.push('<a class="awaid-btn awaid-btn--secondary awaid-btn--block" href="' + awaidEsc(u.telUrl) + '">' + awaidEsc(labels.call) + '</a>');
+				p.push(
+					'<a class="awaid-btn awaid-btn--secondary awaid-btn--block awaid-unit-modal__action awaid-unit-modal__action--call" href="' +
+						awaidEsc(u.telUrl) +
+						'">' +
+						'<i class="fa fa-phone" aria-hidden="true"></i>' +
+						awaidEsc(labels.call) +
+						'</a>'
+				);
 			}
 			p.push('</div>');
 
