@@ -17,6 +17,7 @@
 		if (!pills.length || !cards.length) {
 			return;
 		}
+		var emptyState = root.querySelector('[data-awaid-units-empty]');
 		var items = Array.prototype.slice.call(cards).map(function (card) {
 			return {
 				card: card,
@@ -25,11 +26,19 @@
 		});
 
 		function apply(filter) {
+			var visibleCount = 0;
 			items.forEach(function (item) {
 				var st = item.card.getAttribute('data-status') || '';
 				var show = filter === 'all' || st === filter;
 				item.box.style.display = show ? '' : 'none';
+				if (show) {
+					visibleCount += 1;
+				}
 			});
+			if (emptyState) {
+				emptyState.style.display = visibleCount > 0 ? 'none' : '';
+				emptyState.setAttribute('aria-hidden', visibleCount > 0 ? 'true' : 'false');
+			}
 			pills.forEach(function (p) {
 				var on = p.getAttribute('data-filter') === filter;
 				p.classList.toggle('is-active', on);
@@ -43,6 +52,7 @@
 				apply(p.getAttribute('data-filter') || 'all');
 			});
 		});
+		apply('all');
 	}
 
 	/**

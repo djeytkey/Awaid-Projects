@@ -566,6 +566,15 @@ while (have_posts()) :
 										</div>
 									<?php endforeach; ?>
 								</div>
+								<div class="mt-5" data-awaid-units-empty style="display: none;" aria-hidden="true">
+									<div class="row">
+										<div class="col-12 text-center m-auto">
+											<img src="https://riva.sa/frontend/img/EmptyInbox.png" alt="Riva - ريفا">
+											<p class="text-main fs-bold mb-1">تعذر وجود نتائج!</p>
+											<p class="text-muted fs-15">لم نتمكن من العثور على أي وحدات</p>
+										</div>
+									</div>
+								</div>
 								<!-- </section> -->
 							</div>
 						<?php endif; ?>
