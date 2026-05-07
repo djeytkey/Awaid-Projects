@@ -279,8 +279,8 @@ while (have_posts()) :
 				</div>
 			<?php endif; ?>
 
-			<div class="awaid-panel">
-				<ul class="awaid-meta-rows row post-meta mb-2">
+			<div class="awaid-panel awaid-panel--specs p-2 py-3 mt-2 rounded inlined">
+				<ul class="post-meta row mb-2">
 					<?php if (!empty($d['license'])) : ?>
 						<li class="col-md-6">
 							<span class="awaid-meta-rows__k"><?php esc_html_e('رخصة الاعلان', 'awaid-projects'); ?></span>
