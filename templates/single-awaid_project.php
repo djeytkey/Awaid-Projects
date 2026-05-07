@@ -213,9 +213,9 @@ while (have_posts()) :
 ?>
 		<div class="<?php echo esc_attr($base); ?>">
 			<div class="awaid-sidebar-card__block">
-				<p class="awaid-sidebar-card__eyebrow"><?php esc_html_e('المطور', 'awaid-projects'); ?></p>
 				<?php if (!empty($d['developer'])) : ?>
-					<p class="awaid-sidebar-card__strong"><?php echo esc_html((string) $d['developer']); ?></p>
+					<span class="awaid-sidebar-card__eyebrow"><?php esc_html_e('المطور', 'awaid-projects'); ?></span>
+					<span class="awaid-sidebar-card__strong"><?php echo esc_html((string) $d['developer']); ?></span>
 				<?php endif; ?>
 			</div>
 

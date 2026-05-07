@@ -945,6 +945,7 @@ body.single-awaid_project .awaid-section__title {
 	margin: 0;
 	font-size: 1.05rem;
 	font-weight: 700;
+	float: inline-end;
 }
 
 .awaid-panel {
