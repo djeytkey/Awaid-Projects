@@ -157,7 +157,8 @@ while (have_posts()) :
 		if ($wa_digits !== '') {
 			$wa_msg = sprintf(
 				/* translators: 1: project title, 2: unit code, 3: permalink */
-				__('I am interested in unit %2$s at %1$s %3$s', 'awaid-projects'),
+				// __('I am interested in unit %2$s at %1$s %3$s', 'awaid-projects'),
+				__('أنا مهتم بالوحدة "%2$s" في "%1$s" %3$s', 'awaid-projects'),
 				get_the_title(),
 				$code,
 				get_permalink()
